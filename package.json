@@ -1,6 +1,6 @@
 {
   "name": "interview_task",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -19,5 +19,6 @@
     "url": "https://github.com/serjio1905/interview_task/issues"
   },
   "homepage": "https://github.com/serjio1905/interview_task#readme",
-  "dependencies": {}
+  "dependencies": {
+  }
 }

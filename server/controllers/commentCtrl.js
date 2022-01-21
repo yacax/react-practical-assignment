@@ -17,7 +17,7 @@ exports.editComment = async (req, res, next) => {
         delete comment.postId;
         delete comment.id;
         comment = await editCommentDB(id, req.body);
-        comment = await getCommentDB(id)
+        // comment = await getCommentDB(id)
         return res.status(200).send({success: true, result: comment});
     } catch (e) {
         return res.status(400).send({success: false, result: e.message});

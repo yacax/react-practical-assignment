@@ -21,7 +21,7 @@ exports.editPost = async (req, res, next) => {
         delete post.id;
         delete post.username;
         post = await editPostDB(id, post);
-        post = await getPostDB(id);
+        // post = await getPostDB(id);
         return res.status(200).send({success: true, result: post});
     } catch (e) {
         return res.status(400).send({success: false, result: e.message});
@@ -84,7 +84,7 @@ exports.deletePost = async (req, res, next) => {
         const post = await deletePostDB(postId);
         let comments = await getTable(TABLE_NAMES.comment);
         comments = comments.filter(comment => comment.postId !== postId);
-        await await updateTable(TABLE_NAMES.comment, comments);
+        await updateTable(TABLE_NAMES.comment, comments);
         return res.status(200).send({success: true, result: post});
     } catch (e) {
         return res.status(400).send({success: false, result: e.message});

@@ -8,7 +8,8 @@ const storage = multer.diskStorage({
         if (!req.params.id) throw new Error('Post ID param does not defined');
         let extArray = file.mimetype.split("/");
         let extension = extArray[extArray.length - 1];
-        cb(null, `${req.params.id}.${extension}`);
+        const time = (+new Date()).toString();
+        cb(null, `${req.params.id}_${time}.${extension}`);
     }
 });
     

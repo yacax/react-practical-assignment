@@ -72,7 +72,7 @@ response: [
 ]
 
 GET POSTS BY PAGES (9 posts per page)
-url MAIN_URL + '/page/${pageNumber}' // pageNumber > 0
+url MAIN_URL + 'post/page/${pageNumber}' // pageNumber > 0
 response: [
     {
         id: <number>,
