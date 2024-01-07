@@ -9,7 +9,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCurrentUser } from '../../../../store/userSlice';
+import { clearCurrentUser } from '../../../../store/userSlice';
 
 export default function Header() {
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -25,7 +25,8 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    dispatch(setCurrentUser(null));
+    dispatch(clearCurrentUser());
+    localStorage.removeItem('currentUser');
   };
 
   return (

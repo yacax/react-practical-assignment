@@ -7,6 +7,9 @@ const useForm = (
   const [errors, setErrors] = useState({});
   const [isFormValid, setIsFormValid] = useState(false);
 
+  const hasErrors = () => Object.values(errors).some((value) => value !== '');
+  const checkInitial = () => !Object.keys(form).every((key) => form[key] === initialState[key]);
+
   const handleChange = (evt) => {
     const input = evt.target;
 
@@ -15,14 +18,15 @@ const useForm = (
       [input.name]: input.value,
     }));
 
+    const errorMessage = input.validationMessage;
     setErrors((prevErrors) => ({
       ...prevErrors,
-      [input.name]: input.validationMessage,
+      [input.name]: errorMessage,
     }));
   };
 
   useEffect(() => {
-    setIsFormValid(Object.values(errors).every((error) => error === ''));
+    setIsFormValid(!hasErrors() && checkInitial());
   }, [form, errors]);
 
   return {

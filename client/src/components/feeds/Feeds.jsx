@@ -7,7 +7,7 @@ function Feeds() {
   const posts = useSelector((state) => state.posts.posts);
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} mt="0">
       {posts.map((post) => (
         <Grid item xs={12} sm={6} md={4} key={post.id}>
           <PostCard post={post} />

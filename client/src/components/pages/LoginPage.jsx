@@ -17,8 +17,8 @@ export default function LoginPage() {
   const currentUser = useSelector((state) => state.user.currentUser);
   const {
     form,
-    // errors,
-    // isFormValid,
+    errors,
+    isFormValid,
     handleChange,
   } = useForm({
     name: '',
@@ -33,7 +33,7 @@ export default function LoginPage() {
     if (currentUser) {
       navigate('/');
     }
-  }, [currentUser, navigate]);
+  }, [currentUser, navigate, form]);
 
   return (
     <BasicLayout>
@@ -68,13 +68,22 @@ export default function LoginPage() {
             autoFocus
             value={form.name}
             onChange={handleChange}
+            error={!!errors.name}
+            helperText={errors.name || ' '}
+            FormHelperTextProps={{
+              style: { minHeight: '1em' },
+            }}
           />
 
           <Button
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 10 }}
+            disabled={!isFormValid}
+            sx={{
+              mt: 3,
+              mb: 10,
+            }}
           >
             Login
           </Button>
