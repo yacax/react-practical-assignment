@@ -6,6 +6,7 @@ const { upload } = require('../utils/fileUploader');
 const router = express.Router();
 const FindFiles = require('file-regex');
 const path = require('path');
+const baseURL = process.env.BASE_URL || 'http://localhost:8080';
 
 router.get('/:id', postCtrl.getPost);
 
@@ -20,7 +21,7 @@ router.post('/:id/picture', upload.single('picture'), async (req, res) => {
     const postID = +req.params.id;
     try {
         if (file) {
-            const filePath = `http://localhost:8080/${file.filename}`;
+            const filePath = `${baseURL}/${file.filename}`;
             /** 
              * tricky part
              * we need this because sometime couple of processes trying to edit the same file
