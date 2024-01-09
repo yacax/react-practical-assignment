@@ -14,7 +14,12 @@ import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useSelector, useDispatch } from 'react-redux';
+import getSimpleDate from '../../utils/getSimpleDate';
+import SettingCardMenu from '../@extended/SettingCardMenu';
+import mainApi from '../../utils/api';
+import { addInfo } from '../../store/infoSlice';
+import { deletePostById, setLoading, addPost } from '../../store/postsSlice';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -27,11 +32,54 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function PostCard({ post }) {
+export default function PostCard({ post, handleOpenModal }) {
+  const currentUser = useSelector((state) => state.user.currentUser);
   const [expanded, setExpanded] = React.useState(false);
-
+  const dispatch = useDispatch();
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+
+  const deletePost = async () => {
+    try {
+      const deleteRequest = await mainApi.deletePost(post.id);
+      if (deleteRequest.success) {
+        dispatch(addInfo({ message: 'Post deleted successfully', severity: 'info' }));
+        dispatch(deletePostById(deleteRequest.result.id));
+      }
+    } catch (error) {
+      dispatch(addInfo({ message: error.message, severity: 'error' }));
+    }
+  };
+
+  const editPost = async () => {
+    handleOpenModal('modalPost', post.id);
+  };
+
+  const duplicatePost = async () => {
+    dispatch(setLoading(true));
+    try {
+      const formDataForNewPostBase = {
+        title: post.title,
+        username: currentUser,
+      };
+      const responseNewPost = await mainApi.addNewPost(formDataForNewPostBase);
+      const newPostId = responseNewPost.result.id;
+      const imageFile = await fetch(post.imageSrc);
+      const imageBlob = await imageFile.blob();
+      const imageFileForUpload = new File([imageBlob], `image-${post.id}.jpg`, { type: 'image/jpeg' });
+
+      const newPostWithImage = await mainApi.uploadImage(newPostId, imageFileForUpload);
+      dispatch(addInfo({
+        message: 'Post duplicated successfully!',
+        severity: 'success',
+      }));
+      dispatch(addPost(newPostWithImage.result));
+    } catch (error) {
+      dispatch(addInfo({ message: error.message, severity: 'error' }));
+    } finally {
+      dispatch(setLoading(false));
+    }
   };
 
   return (
@@ -42,27 +90,41 @@ export default function PostCard({ post }) {
       <CardHeader
         avatar={(
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
+            {post.username[0] || 'U'}
           </Avatar>
         )}
         action={(
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
+
+          <SettingCardMenu
+            deletePost={deletePost}
+            duplicatePost={duplicatePost}
+            editPost={editPost}
+          />
+
         )}
         title={post.title}
-        subheader={new Date(post.date).toString()}
+        subheader={getSimpleDate(+post.date)}
+        titleTypographyProps={{
+          sx: {
+            width: 'calc(100% - 20px)',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+          },
+        }}
       />
       <CardMedia
         component="img"
         height="194"
         image={post.imageSrc}
         alt={post.title}
+
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           {post.username}
         </Typography>
+
       </CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
@@ -80,7 +142,12 @@ export default function PostCard({ post }) {
           <ExpandMoreIcon />
         </ExpandMore>
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
+      <Collapse
+        in={expanded}
+        timeout="auto"
+        unmountOnExit
+
+      >
         <CardContent>
           <Typography paragraph>Comments</Typography>
           <Typography paragraph>
@@ -115,7 +182,7 @@ PostCard.propTypes = {
     likes: PropTypes.arrayOf(PropTypes.string),
     dislikes: PropTypes.arrayOf(PropTypes.string),
     imageSrc: PropTypes.string,
-    date: PropTypes.number,
+    date: PropTypes.string,
     comments: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number.isRequired,
       text: PropTypes.string.isRequired,
@@ -123,7 +190,8 @@ PostCard.propTypes = {
       username: PropTypes.string.isRequired,
       likes: PropTypes.arrayOf(PropTypes.string),
       dislikes: PropTypes.arrayOf(PropTypes.string),
-      date: PropTypes.number,
+      date: PropTypes.string,
     })),
   }).isRequired,
+  handleOpenModal: PropTypes.func.isRequired,
 };

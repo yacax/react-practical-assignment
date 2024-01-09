@@ -7,7 +7,7 @@ export const TEST_POSTS = [
     username: 'user123',
     likes: ['user234', 'user345'],
     dislikes: ['user456'],
-    imageSrc: 'https://source.unsplash.com/random',
+    imageSrc: 'https://source.unsplash.com/random/1500x1000',
     date: 1672527600000,
     comments: [
       {
@@ -32,7 +32,7 @@ export const TEST_POSTS = [
     username: 'user456',
     likes: ['user123', 'user345'],
     dislikes: ['user234'],
-    imageSrc: 'https://source.unsplash.com/random',
+    imageSrc: 'https://source.unsplash.com/random/1500x1000',
     date: 1672614000000,
     comments: [
       {
@@ -44,5 +44,90 @@ export const TEST_POSTS = [
       },
     ],
   },
-
+  {
+    id: 3,
+    title: 'Заголовок поста 1',
+    username: 'user123',
+    likes: ['user234', 'user345'],
+    dislikes: ['user456'],
+    imageSrc: 'https://source.unsplash.com/random/1500x1000',
+    date: 1672527600000,
+    comments: [
+      {
+        id: 1,
+        username: 'user234',
+        text: 'Отличный пост!',
+        date: 1672527600000,
+        postId: 1,
+      },
+      {
+        id: 2,
+        username: 'user345',
+        text: 'Согласен с предыдущим комментарием.',
+        date: 1672614000000,
+        postId: 1,
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: 'Заголовок поста 2',
+    username: 'user456',
+    likes: ['user123', 'user345'],
+    dislikes: ['user234'],
+    imageSrc: 'https://source.unsplash.com/random/1500x1000',
+    date: 1672614000000,
+    comments: [
+      {
+        id: 1,
+        username: 'user123',
+        text: 'Интересная мысль.',
+        date: 1672700400000,
+        postId: 2,
+      },
+    ],
+  },
+  {
+    id: 5,
+    title: 'Заголовок поста 1',
+    username: 'user123',
+    likes: ['user234', 'user345'],
+    dislikes: ['user456'],
+    imageSrc: 'https://source.unsplash.com/random/1500x1000',
+    date: 1672527600000,
+    comments: [
+      {
+        id: 1,
+        username: 'user234',
+        text: 'Отличный пост!',
+        date: 1672527600000,
+        postId: 1,
+      },
+      {
+        id: 2,
+        username: 'user345',
+        text: 'Согласен с предыдущим комментарием.',
+        date: 1672614000000,
+        postId: 1,
+      },
+    ],
+  },
+  {
+    id: 6,
+    title: 'Заголовок поста 2',
+    username: 'user456',
+    likes: ['user123', 'user345'],
+    dislikes: ['user234'],
+    imageSrc: 'https://source.unsplash.com/random/1500x1000',
+    date: 1672614000000,
+    comments: [
+      {
+        id: 1,
+        username: 'user123',
+        text: 'Интересная мысль.',
+        date: 1672700400000,
+        postId: 2,
+      },
+    ],
+  },
 ];

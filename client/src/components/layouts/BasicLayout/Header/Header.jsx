@@ -76,9 +76,21 @@ export default function Header() {
                 }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
+                sx={{ mt: '35px', ml: '10px' }}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                <MenuItem
+                  onClick={handleClose}
+                  sx={{ justifyContent: 'right' }}
+                >
+                  New post
+                </MenuItem>
+                <MenuItem
+                  onClick={handleLogout}
+                  sx={{ color: 'red', justifyContent: 'right' }}
+                >
+                  Logout
+
+                </MenuItem>
               </Menu>
             </div>
           )}
