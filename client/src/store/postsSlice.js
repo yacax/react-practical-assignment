@@ -27,6 +27,27 @@ const postsSlice = createSlice({
         return post;
       });
     },
+
+    addComment: (state, action) => {
+      const comment = action.payload;
+      const post = state.posts
+        .find((p) => p.id === comment.postId);
+      if (post) {
+        if (!post.comments) {
+          post.comments = [];
+        }
+        post.comments = [...post.comments, comment];
+      }
+    },
+    changeCommentById: (state, action) => {
+      const { postId, commentId, updates } = action.payload;
+      const post = state.posts.find((p) => p.id === postId);
+      if (post && post.comments) {
+        post.comments = post.comments
+          .map((comment) => (comment.id === commentId ? { ...comment, ...updates } : comment));
+      }
+    },
+
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
@@ -35,6 +56,6 @@ const postsSlice = createSlice({
 });
 
 export const {
-  addPost, addPosts, setLoading, deletePostById, changePostById,
+  addPost, addPosts, setLoading, deletePostById, changePostById, addComment, changeCommentById,
 } = postsSlice.actions;
 export default postsSlice.reducer;

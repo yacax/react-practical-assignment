@@ -202,6 +202,8 @@ function NewPostModal({
             variant="standard"
             fullWidth
             required
+            multiline
+            maxRows={3}
             id="title"
             name="title"
             value={form.title}
@@ -213,6 +215,11 @@ function NewPostModal({
             FormHelperTextProps={{
               style: { minHeight: '1em' },
             }}
+            inputProps={
+              {
+                maxLength: 150,
+              }
+            }
           />
           <div style={imagePreviewStyle}>
             {imagePreview && <img src={imagePreview} alt="Preview" style={imageStyle} />}

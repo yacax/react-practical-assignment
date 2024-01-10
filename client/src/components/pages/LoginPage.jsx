@@ -21,12 +21,12 @@ export default function LoginPage() {
     isFormValid,
     handleChange,
   } = useForm({
-    name: '',
+    username: '',
   });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch(setCurrentUser(form.name));
+    dispatch(setCurrentUser(form.username));
   };
 
   useEffect(() => {
@@ -56,23 +56,35 @@ export default function LoginPage() {
         <Typography component="h1" variant="h5">
           Authorization
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            mt: 1,
+            width: '320px',
+          }}
+        >
           <TextField
             margin="normal"
             required
             fullWidth
-            id="name"
+            id="username"
             label="Your name"
-            name="name"
-            autoComplete="name"
+            name="username"
+            autoComplete="username"
             autoFocus
             value={form.name}
             onChange={handleChange}
-            error={!!errors.name}
-            helperText={errors.name || ' '}
+            error={!!errors.username}
+            helperText={errors.username || ' '}
             FormHelperTextProps={{
               style: { minHeight: '1em' },
             }}
+            inputProps={
+              {
+                maxLength: 25,
+              }
+            }
           />
 
           <Button

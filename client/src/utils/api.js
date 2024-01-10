@@ -65,6 +65,13 @@ class Api {
       body: JSON.stringify(post),
     });
   }
+
+  createComment(comment) {
+    return this._request('/comment', {
+      method: 'POST',
+      body: JSON.stringify(comment),
+    });
+  }
 }
 
 const mainApi = new Api({

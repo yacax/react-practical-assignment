@@ -1,5 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import './PostCard.scss';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -10,20 +11,42 @@ import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useSelector, useDispatch } from 'react-redux';
+import { Box } from '@mui/material';
 import getSimpleDate from '../../utils/getSimpleDate';
 import SettingCardMenu from '../@extended/SettingCardMenu';
 import mainApi from '../../utils/api';
 import { addInfo } from '../../store/infoSlice';
 import { deletePostById, setLoading, addPost } from '../../store/postsSlice';
+import PopoverAddComment from '../@extended/PopoverAddComment';
+import AlignItemsList from '../@extended/AlignItemsList';
+import { DEFAULT_AVATAR_LETTER } from '../../utils/constants';
+import getAvatarColor from '../../utils/getAvatarColors';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
-  return <IconButton {...other} />;
+  return (
+    <Box display="flex">
+
+      <Typography
+        display="block"
+        variant="body2"
+        color="text.secondary"
+        ml={1}
+        sx={{
+          alignSelf: 'center',
+        }}
+      >
+        Comments
+      </Typography>
+      <IconButton {...other} />
+    </Box>
+  );
 })(({ theme, expand }) => ({
   transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
   marginLeft: 'auto',
@@ -35,6 +58,7 @@ const ExpandMore = styled((props) => {
 export default function PostCard({ post, handleOpenModal }) {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [expanded, setExpanded] = React.useState(false);
+  const [likes, setLikes] = React.useState({ like: false, dislike: false, count: 0 });
   const dispatch = useDispatch();
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -82,65 +106,107 @@ export default function PostCard({ post, handleOpenModal }) {
     }
   };
 
+  React.useEffect(() => {
+    setLikes((prev) => ({
+      ...prev,
+      count: 5,
+    }));
+  }, []);
+
+  const getLikeColour = (likesCount) => {
+    if (likesCount > 0) {
+      return 'primary';
+    }
+    if (likesCount < 0) {
+      return 'error';
+    }
+    return 'inherit';
+  };
+
   return (
     <Card sx={{
       width: '100%',
+      overflow: 'auto',
+      maxHeight: '560px',
     }}
     >
       <CardHeader
         avatar={(
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            {post.username[0] || 'U'}
+          <Avatar sx={{ bgcolor: getAvatarColor(post.username[0]) }} aria-label="recipe">
+            {post.username[0] || DEFAULT_AVATAR_LETTER}
           </Avatar>
         )}
         action={(
-
           <SettingCardMenu
             deletePost={deletePost}
             duplicatePost={duplicatePost}
             editPost={editPost}
           />
-
         )}
         title={post.title}
         subheader={getSimpleDate(+post.date)}
         titleTypographyProps={{
           sx: {
-            width: 'calc(100% - 20px)',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
           },
         }}
       />
+      { post.imageSrc && (
       <CardMedia
         component="img"
         height="194"
         image={post.imageSrc}
         alt={post.title}
-
       />
+      )}
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           {post.username}
         </Typography>
 
       </CardContent>
-      <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
-        <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
+      <CardActions
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+
+        {post.comments.length > 0 ? (
+          <ExpandMore
+            expand={expanded}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            <ExpandMoreIcon />
+
+          </ExpandMore>
+        ) : (
+          <Typography variant="body2" color="text.secondary" ml={1}>
+            No comments yet
+          </Typography>
+        )}
+        <Box
+          display="flex"
+          flexDirection="row"
+          alignItems="center"
         >
-          <ExpandMoreIcon />
-        </ExpandMore>
+          <PopoverAddComment postId={post.id} />
+
+          <IconButton aria-label="Like">
+            {likes.like ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
+          </IconButton>
+          <Typography variant="subtitle" color={getLikeColour(likes.count)}>
+            {likes.count}
+          </Typography>
+          <IconButton aria-label="Dislike">
+            {likes.dislike ? <ThumbDownIcon /> : <ThumbDownOutlinedIcon />}
+          </IconButton>
+
+        </Box>
       </CardActions>
       <Collapse
         in={expanded}
@@ -148,28 +214,17 @@ export default function PostCard({ post, handleOpenModal }) {
         unmountOnExit
 
       >
-        <CardContent>
-          <Typography paragraph>Comments</Typography>
-          <Typography paragraph>
-            {post.comments.map((comment) => (
-              <Typography key={comment.id}>
-                {comment.username}
-                :
-                {comment.text}
-              </Typography>
-            ))}
-          </Typography>
-          <Typography paragraph>
-            {post.likes.length}
-          </Typography>
-          <Typography paragraph>
-            {post.dislikes.length}
-          </Typography>
-          <Typography>
-            {post.comments.length}
-          </Typography>
+        <CardContent
+          sx={{
+            overflow: 'auto',
+          }}
+        >
+          {post.comments.map((comment) => (
+            <AlignItemsList comment={comment} key={comment.id} />
+          ))}
         </CardContent>
       </Collapse>
+
     </Card>
   );
 }

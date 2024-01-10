@@ -13,7 +13,7 @@ function BasicLayout({ children }) {
     if (info.message) {
       setTimeout(() => {
         dispatch(clearInfo());
-      }, 6001);
+      }, 6000);
     }
   }, [info]);
   return (

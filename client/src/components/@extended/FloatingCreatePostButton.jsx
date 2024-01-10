@@ -12,9 +12,12 @@ export default function FloatingCreatePostButton({ handleOpenModal }) {
         color="secondary"
         aria-label="add"
         sx={{
-          position: { xs: 'fixed', lg: 'absolute' },
+          // position: { xs: 'fixed', xl: 'absolute' },
+          position: 'fixed',
           bottom: 42,
-          right: { xs: 16, sm: 24, md: 52 },
+          right: {
+            xs: 16, sm: 24, md: 52, lg: 172, xl: 396,
+          },
           width: { xs: 48, sm: 64, md: 98 },
           height: { xs: 48, sm: 64, md: 98 },
         }}

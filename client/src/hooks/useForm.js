@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import validateUsername from '../utils/validateUsername';
+import { USERNAME_ERROR_MESSAGE } from '../utils/infoMessagesTexts';
 
 const useForm = (initialState) => {
   const [form, setForm] = useState(initialState);
@@ -12,6 +14,7 @@ const useForm = (initialState) => {
     const {
       name, value, files, type,
     } = event.target;
+    let errorMessage = '';
 
     if (type === 'file') {
       setForm((prevForm) => ({
@@ -25,7 +28,15 @@ const useForm = (initialState) => {
       }));
     }
 
-    const errorMessage = event.target.validationMessage;
+    if (name === 'username' && !validateUsername(value)) {
+      errorMessage = USERNAME_ERROR_MESSAGE;
+    } else {
+      errorMessage = '';
+    }
+
+    const browserErrorMessage = event.target.validationMessage;
+
+    errorMessage = browserErrorMessage || errorMessage;
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: errorMessage,
@@ -51,12 +62,19 @@ const useForm = (initialState) => {
     }));
   };
 
+  const addValue = (name, value) => {
+    setForm((prevForm) => ({
+      ...prevForm,
+      [name]: value,
+    }));
+  };
+
   useEffect(() => {
     setIsFormValid(!hasErrors() && checkInitial());
   }, [form, errors]);
 
   return {
-    form, handleChange, errors, isFormValid, resetForm, resetValue, setFormFields,
+    form, handleChange, errors, isFormValid, resetForm, resetValue, setFormFields, addValue,
   };
 };
 
