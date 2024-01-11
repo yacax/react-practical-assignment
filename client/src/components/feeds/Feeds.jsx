@@ -9,7 +9,9 @@ function Feeds({ handleOpenModal }) {
 
   return (
     <Masonry
-      columns={{ xs: 1, sm: 2, md: 3 }}
+      columns={{
+        xs: 1, md: 2, lg: 3,
+      }}
       spacing={2}
       sx={{
         margin: 'auto',

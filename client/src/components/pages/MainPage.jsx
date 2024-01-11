@@ -30,7 +30,6 @@ export default function MainPage() {
 
   useEffect(() => {
     mainApi.getPostsByPage().then((response) => {
-      console.log(response);
       dispatch(addPosts(response.result));
     }).catch((error) => {
       dispatch(addInfo({ message: error.message, severity: 'error' }));

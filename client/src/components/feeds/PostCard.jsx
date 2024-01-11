@@ -11,10 +11,6 @@ import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
-import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box } from '@mui/material';
@@ -24,18 +20,21 @@ import mainApi from '../../utils/api';
 import { addInfo } from '../../store/infoSlice';
 import { deletePostById, setLoading, addPost } from '../../store/postsSlice';
 import PopoverAddComment from '../@extended/PopoverAddComment';
-import AlignItemsList from '../@extended/AlignItemsList';
+import CommentsList from '../@extended/CommentsList';
 import { DEFAULT_AVATAR_LETTER } from '../../utils/constants';
 import getAvatarColor from '../../utils/getAvatarColors';
+import LikesGroup from '../@extended/LikesGroup';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
   return (
-    <Box display="flex">
+    <Box
+      display="flex"
+    >
 
       <Typography
         display="block"
-        variant="body2"
+        variant="subtitle1"
         color="text.secondary"
         ml={1}
         sx={{
@@ -58,7 +57,6 @@ const ExpandMore = styled((props) => {
 export default function PostCard({ post, handleOpenModal }) {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [expanded, setExpanded] = React.useState(false);
-  const [likes, setLikes] = React.useState({ like: false, dislike: false, count: 0 });
   const dispatch = useDispatch();
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -92,7 +90,6 @@ export default function PostCard({ post, handleOpenModal }) {
       const imageFile = await fetch(post.imageSrc);
       const imageBlob = await imageFile.blob();
       const imageFileForUpload = new File([imageBlob], `image-${post.id}.jpg`, { type: 'image/jpeg' });
-
       const newPostWithImage = await mainApi.uploadImage(newPostId, imageFileForUpload);
       dispatch(addInfo({
         message: 'Post duplicated successfully!',
@@ -106,28 +103,11 @@ export default function PostCard({ post, handleOpenModal }) {
     }
   };
 
-  React.useEffect(() => {
-    setLikes((prev) => ({
-      ...prev,
-      count: 5,
-    }));
-  }, []);
-
-  const getLikeColour = (likesCount) => {
-    if (likesCount > 0) {
-      return 'primary';
-    }
-    if (likesCount < 0) {
-      return 'error';
-    }
-    return 'inherit';
-  };
-
   return (
     <Card sx={{
       width: '100%',
       overflow: 'auto',
-      maxHeight: '560px',
+      maxHeight: '514px',
     }}
     >
       <CardHeader
@@ -147,6 +127,8 @@ export default function PostCard({ post, handleOpenModal }) {
         subheader={getSimpleDate(+post.date)}
         titleTypographyProps={{
           sx: {
+            fontSize: '1rem',
+            fontWeight: 'bold',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
@@ -173,7 +155,6 @@ export default function PostCard({ post, handleOpenModal }) {
           justifyContent: 'space-between',
         }}
       >
-
         {post.comments.length > 0 ? (
           <ExpandMore
             expand={expanded}
@@ -182,7 +163,6 @@ export default function PostCard({ post, handleOpenModal }) {
             aria-label="show more"
           >
             <ExpandMoreIcon />
-
           </ExpandMore>
         ) : (
           <Typography variant="body2" color="text.secondary" ml={1}>
@@ -195,36 +175,28 @@ export default function PostCard({ post, handleOpenModal }) {
           alignItems="center"
         >
           <PopoverAddComment postId={post.id} />
-
-          <IconButton aria-label="Like">
-            {likes.like ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
-          </IconButton>
-          <Typography variant="subtitle" color={getLikeColour(likes.count)}>
-            {likes.count}
-          </Typography>
-          <IconButton aria-label="Dislike">
-            {likes.dislike ? <ThumbDownIcon /> : <ThumbDownOutlinedIcon />}
-          </IconButton>
-
+          <LikesGroup
+            likesQuantity={post.likes.length}
+            dislikesQuantity={post.dislikes.length}
+          />
         </Box>
       </CardActions>
       <Collapse
         in={expanded}
         timeout="auto"
         unmountOnExit
-
       >
         <CardContent
           sx={{
             overflow: 'auto',
+            pt: 0,
           }}
         >
           {post.comments.map((comment) => (
-            <AlignItemsList comment={comment} key={comment.id} />
+            <CommentsList comment={comment} key={comment.id} />
           ))}
         </CardContent>
       </Collapse>
-
     </Card>
   );
 }

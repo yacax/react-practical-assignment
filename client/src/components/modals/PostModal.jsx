@@ -31,7 +31,6 @@ function NewPostModal({
 }) {
   const currentUser = useSelector((state) => state.user.currentUser);
   const currentPost = useSelector((state) => state.posts.posts.find((post) => post.id === postId));
-
   const loading = useSelector((state) => state.posts.loading);
   const dispatch = useDispatch();
 

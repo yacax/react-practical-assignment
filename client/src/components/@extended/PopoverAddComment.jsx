@@ -27,7 +27,7 @@ export default function PopoverAddComment({ postId }) {
   };
 
   const {
-    form, isFormValid, handleChange, addValue,
+    form, isFormValid, handleChange, addValue, resetForm,
   } = useForm(
     formInitialValues,
   );
@@ -50,6 +50,7 @@ export default function PopoverAddComment({ postId }) {
         severity: 'success',
       }));
       dispatch(addComment(createComment.result));
+      resetForm();
     } catch (error) {
       dispatch(addInfo({
         message: error.message,
@@ -63,14 +64,12 @@ export default function PopoverAddComment({ postId }) {
   return (
     <Box>
       <IconButton
+        color="secondary"
         aria-describedby={id}
         variant="contained"
         onClick={handleClick}
-        sx={{
-          pb: 0,
-        }}
       >
-        <AddCommentIcon />
+        <AddCommentIcon sx={{ fontSize: '40px' }} />
       </IconButton>
       <Popover
         onSubmit={handleCommentSubmit}
