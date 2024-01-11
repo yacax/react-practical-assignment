@@ -18,7 +18,9 @@ import getSimpleDate from '../../utils/getSimpleDate';
 import SettingCardMenu from '../@extended/SettingCardMenu';
 import mainApi from '../../utils/api';
 import { addInfo } from '../../store/infoSlice';
-import { deletePostById, setLoading, addPost } from '../../store/postsSlice';
+import {
+  deletePostById, setLoading, addPost,
+} from '../../store/postsSlice';
 import PopoverAddComment from '../@extended/PopoverAddComment';
 import CommentsList from '../@extended/CommentsList';
 import { DEFAULT_AVATAR_LETTER } from '../../utils/constants';
@@ -176,8 +178,7 @@ export default function PostCard({ post, handleOpenModal }) {
         >
           <PopoverAddComment postId={post.id} />
           <LikesGroup
-            likesQuantity={post.likes.length}
-            dislikesQuantity={post.dislikes.length}
+            postId={post.id}
           />
         </Box>
       </CardActions>

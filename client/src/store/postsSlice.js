@@ -48,6 +48,14 @@ const postsSlice = createSlice({
       }
     },
 
+    deleteCommentById: (state, action) => {
+      const { postId, commentId } = action.payload;
+      const post = state.posts.find((p) => p.id === postId);
+      if (post && post.comments) {
+        post.comments = post.comments.filter((comment) => comment.id !== commentId);
+      }
+    },
+
     setLoading: (state, action) => {
       state.loading = action.payload;
     },

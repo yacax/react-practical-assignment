@@ -65,6 +65,8 @@ export default function CommentsList({ comment }) {
           />
         </Box>
         <LikesGroup
+          placeLocation="comment"
+          postId={comment.id}
           likesQuantity={comment.likes ? comment.likes.length : 0}
           dislikesQuantity={comment.dislikes ? comment.dislikes.length : 0}
           groupSize="sm"

@@ -72,6 +72,19 @@ class Api {
       body: JSON.stringify(comment),
     });
   }
+
+  deleteComment(id) {
+    return this._request(`/comment/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  updateComment(id, comment) {
+    return this._request(`/comment/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(comment),
+    });
+  }
 }
 
 const mainApi = new Api({
