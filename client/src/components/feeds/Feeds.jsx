@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Masonry } from '@mui/lab';
-import PostCard from './PostCard';
+import { Container, Typography } from '@mui/material';
+import FeedsPost from './FeedsPost';
 
 function Feeds({ handleOpenModal }) {
   const posts = useSelector((state) => state.posts.posts);
-
   return (
     <Masonry
       columns={{
@@ -17,12 +17,22 @@ function Feeds({ handleOpenModal }) {
         margin: 'auto',
       }}
     >
-      {posts.length > 0 ? (
+      {posts && posts.length > 0 ? (
         posts.map((post) => (
-          <PostCard key={post.id} post={post} handleOpenModal={handleOpenModal} />
+          <FeedsPost key={post.id} post={post} handleOpenModal={handleOpenModal} />
         ))
       ) : (
-        <div>No posts available</div>
+        <Container>
+          <Typography
+            variant="h6"
+            sx={{
+              textAlign: 'center',
+              margin: 'auto',
+            }}
+          >
+            No posts available
+          </Typography>
+        </Container>
       )}
     </Masonry>
   );

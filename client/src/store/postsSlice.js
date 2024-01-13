@@ -1,14 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-
-const initialState = {
-  posts: [],
-  loading: false,
-  error: null,
-};
+import { fetchPosts, fetchPostUpdate, fetchCommentUpdate } from './postsThunks';
 
 const postsSlice = createSlice({
   name: 'posts',
-  initialState,
+  initialState: {
+    posts: [],
+    loading: false,
+    error: null,
+  },
   reducers: {
     addPost: (state, action) => {
       state.posts = [...state.posts, action.payload];
@@ -59,11 +58,49 @@ const postsSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
-  },
 
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchPosts.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.loading = false;
+        state.posts = action.payload;
+      })
+      .addCase(fetchPosts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(fetchPostUpdate.fulfilled, (state, action) => {
+        const postIndex = state.posts.findIndex((p) => p.id === action.payload.id);
+        if (postIndex !== -1) {
+          state.posts[postIndex] = { ...state.posts[postIndex], ...action.payload };
+        }
+      })
+      .addCase(fetchCommentUpdate.fulfilled, (state, action) => {
+        const post = state.posts.find((p) => p.id === action.payload.postId);
+        if (post && post.comments) {
+          const commentIndex = post.comments.findIndex((c) => c.id === action.payload.id);
+          if (commentIndex !== -1) {
+            post.comments[commentIndex] = { ...post.comments[commentIndex], ...action.payload };
+          }
+        }
+      });
+  },
 });
 
 export const {
-  addPost, addPosts, setLoading, deletePostById, changePostById, addComment, changeCommentById,
+  addPost,
+  addPosts,
+  setLoading,
+  deletePostById,
+  changePostById,
+  addComment,
+  changeCommentById,
+  deleteCommentById,
+  toggleLikeDislike,
 } = postsSlice.actions;
 export default postsSlice.reducer;

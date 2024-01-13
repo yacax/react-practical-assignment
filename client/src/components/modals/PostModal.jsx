@@ -29,6 +29,7 @@ import { addInfo } from '../../store/infoSlice';
 function NewPostModal({
   openModal, handleCloseModal, postId,
 }) {
+  const [isMounted, setIsMounted] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
   const currentPost = useSelector((state) => state.posts.posts.find((post) => post.id === postId));
   const loading = useSelector((state) => state.posts.loading);
@@ -56,11 +57,11 @@ function NewPostModal({
   }, [currentPost]);
 
   const handleClose = () => {
-    resetForm({
-      name: '',
-      title: '',
-      image: null,
-    });
+    // resetForm({
+    //   name: '',
+    //   title: '',
+    //   image: null,
+    // });
     handleCloseModal('modalPost');
   };
 
@@ -70,6 +71,7 @@ function NewPostModal({
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!isMounted) return;
     dispatch(setLoading(true));
     if (!postId) {
       try {
@@ -161,6 +163,11 @@ function NewPostModal({
     }
   }, [form.image, postId]);
 
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
+
   const imagePreviewStyle = {
     display: 'flex',
     justifyContent: 'center',
@@ -235,6 +242,8 @@ function NewPostModal({
               ? (
                 <Button
                   component="label"
+                  name="uploadImageButton"
+                  id="uploadImageButton"
                   variant="contained"
                   startIcon={<CloudUploadIcon />}
                   sx={{
@@ -259,6 +268,8 @@ function NewPostModal({
                   { postId && (
                   <Button
                     variant="contained"
+                    name="changeImageButton"
+                    id="changeImageButton"
                     color="primary"
                     component="label"
                     startIcon={<ChangeCircleIcon />}
@@ -275,7 +286,7 @@ function NewPostModal({
                     <VisuallyHiddenInput
                       type="file"
                       name="image"
-                      id="imageNew"
+                      id="image"
                       onChange={handleChange}
                     />
                   </Button>
@@ -283,6 +294,8 @@ function NewPostModal({
                   { !postId && (
                   <Button
                     variant="contained"
+                    name="deleteImageButton"
+                    id="deleteImageButton"
                     color="secondary"
                     component="span"
                     onClick={deleteImage}

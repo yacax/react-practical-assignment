@@ -13,8 +13,9 @@ import mainApi from '../../utils/api';
 import { changePostById } from '../../store/postsSlice';
 
 export default function LikesGroup({
-  postId, groupSize, mt, ml,
+  postId, commentId, groupSize, mt, ml,
 }) {
+  console.log(commentId);
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
   const post = useSelector((state) => state.posts.posts.find((el) => el.id === postId));
@@ -111,12 +112,14 @@ export default function LikesGroup({
 
 LikesGroup.propTypes = {
   postId: PropTypes.number.isRequired,
+  commentId: PropTypes.number,
   groupSize: PropTypes.string,
   mt: PropTypes.number,
   ml: PropTypes.number,
 };
 
 LikesGroup.defaultProps = {
+  commentId: null,
   groupSize: 'md',
   mt: 0,
   ml: 0,

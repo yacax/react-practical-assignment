@@ -11,7 +11,7 @@ function App() {
 
   return (
 
-    <BrowserRouter>
+    <BrowserRouter basename="/react-practical-assignment">
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route

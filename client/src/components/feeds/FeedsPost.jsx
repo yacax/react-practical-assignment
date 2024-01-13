@@ -1,6 +1,6 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import './PostCard.scss';
+import './FeedsPost.scss';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -25,7 +25,8 @@ import PopoverAddComment from '../@extended/PopoverAddComment';
 import CommentsList from '../@extended/CommentsList';
 import { DEFAULT_AVATAR_LETTER } from '../../utils/constants';
 import getAvatarColor from '../../utils/getAvatarColors';
-import LikesGroup from '../@extended/LikesGroup';
+import LikesGroupIndicator from '../@extended/LikesGroupIndicator';
+import { fetchPostUpdate } from '../../store/postsThunks';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -56,8 +57,9 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function PostCard({ post, handleOpenModal }) {
+export default function FeedsPost({ post, handleOpenModal }) {
   const currentUser = useSelector((state) => state.user.currentUser);
+  const [isLikedValue, setIsLikedValue] = React.useState(0);
   const [expanded, setExpanded] = React.useState(false);
   const dispatch = useDispatch();
   const handleExpandClick = () => {
@@ -104,6 +106,47 @@ export default function PostCard({ post, handleOpenModal }) {
       dispatch(setLoading(false));
     }
   };
+
+  const handleLikeOrDislike = async (type, elementId) => {
+    if (!post || !currentUser) return;
+    let updatedLikes = [...post.likes];
+    let updatedDislikes = [...post.dislikes];
+
+    if (type === 'like') {
+      if (updatedLikes.includes(currentUser)) {
+        updatedLikes = updatedLikes.filter((user) => user !== currentUser);
+      } else {
+        updatedLikes.push(currentUser);
+        updatedDislikes = updatedDislikes.filter((user) => user !== currentUser);
+      }
+    } else if (type === 'dislike') {
+      if (updatedDislikes.includes(currentUser)) {
+        updatedDislikes = updatedDislikes.filter((user) => user !== currentUser);
+      } else {
+        updatedDislikes.push(currentUser);
+        updatedLikes = updatedLikes.filter((user) => user !== currentUser);
+      }
+    }
+
+    const updatedPost = { ...post, likes: updatedLikes, dislikes: updatedDislikes };
+
+    try {
+      await dispatch(fetchPostUpdate({ id: elementId, post: updatedPost }));
+    } catch (error) {
+      dispatch(addInfo({ message: error.message, severity: 'error' }));
+    }
+  };
+
+  useEffect(() => {
+    if (post) {
+      const isPostLikedOrDisliked = () => {
+        if (post.likes.includes(currentUser)) return 1;
+        if (post.dislikes.includes(currentUser)) return -1;
+        return 0;
+      };
+      setIsLikedValue(isPostLikedOrDisliked);
+    }
+  }, [post, currentUser]);
 
   return (
     <Card sx={{
@@ -157,7 +200,7 @@ export default function PostCard({ post, handleOpenModal }) {
           justifyContent: 'space-between',
         }}
       >
-        {post.comments.length > 0 ? (
+        { (post.comments || []).length > 0 ? (
           <ExpandMore
             expand={expanded}
             onClick={handleExpandClick}
@@ -177,9 +220,13 @@ export default function PostCard({ post, handleOpenModal }) {
           alignItems="center"
         >
           <PopoverAddComment postId={post.id} />
-          <LikesGroup
-            postId={post.id}
+          <LikesGroupIndicator
+            elementId={post.id}
+            isLikedValue={isLikedValue}
+            likesCount={post ? post.likes.length - post.dislikes.length : 0}
+            handleLikeOrDislike={handleLikeOrDislike}
           />
+
         </Box>
       </CardActions>
       <Collapse
@@ -194,7 +241,7 @@ export default function PostCard({ post, handleOpenModal }) {
           }}
         >
           {post.comments.map((comment) => (
-            <CommentsList comment={comment} key={comment.id} />
+            <CommentsList comment={comment} key={`comment${comment.id}${post.id}`} post={post} variant="text" color="tertiary" />
           ))}
         </CardContent>
       </Collapse>
@@ -202,7 +249,7 @@ export default function PostCard({ post, handleOpenModal }) {
   );
 }
 
-PostCard.propTypes = {
+FeedsPost.propTypes = {
   post: PropTypes.shape({
     id: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
