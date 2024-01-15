@@ -7,6 +7,8 @@ import Feeds from '../feeds/Feeds';
 import FloatingCreatePostButton from '../@extended/FloatingCreatePostButton';
 import PostModal from '../modals/PostModal';
 import { fetchPosts } from '../../store/postsThunks';
+import SearchSection from '../@extended/SearchSection';
+import Pagination from '../@extended/Pagination';
 
 export default function MainPage() {
   const navigate = useNavigate();
@@ -40,7 +42,8 @@ export default function MainPage() {
   }, [currentUser, navigate]);
 
   return (
-    <BasicLayout>
+    <BasicLayout handleOpenModal={handleOpenModal}>
+      <SearchSection />
       {loading && posts && posts.length < 1 ? (
         <CircularProgress
           color="primary"
@@ -60,6 +63,7 @@ export default function MainPage() {
             postId={openModal.postId}
             handleCloseModal={handleCloseModal}
           />
+          <Pagination />
         </>
       )}
     </BasicLayout>

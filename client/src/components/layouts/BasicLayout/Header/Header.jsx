@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,7 +12,7 @@ import Menu from '@mui/material/Menu';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearCurrentUser } from '../../../../store/userSlice';
 
-export default function Header() {
+export default function Header({ handleOpenModal }) {
   const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -22,6 +23,11 @@ export default function Header() {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleNewPost = () => {
+    handleOpenModal('modalPost');
+    handleClose();
   };
 
   const handleLogout = () => {
@@ -79,7 +85,7 @@ export default function Header() {
                 sx={{ mt: '35px', ml: '10px' }}
               >
                 <MenuItem
-                  onClick={handleClose}
+                  onClick={handleNewPost}
                   sx={{ justifyContent: 'right' }}
                 >
                   New post
@@ -99,3 +105,7 @@ export default function Header() {
     </Box>
   );
 }
+
+Header.propTypes = {
+  handleOpenModal: PropTypes.func.isRequired,
+};

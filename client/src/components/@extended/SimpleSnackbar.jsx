@@ -8,30 +8,30 @@ import MuiAlert from '@mui/material/Alert';
 const Alert = React.forwardRef((props, ref) => <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />);
 
 export default function SimpleSnackbar({ message, severity }) {
-  const [open, setOpen] = useState(false);
-
-  // const handleClick = () => {
-  //   setOpen(true);
-  // };
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-    setOpen(false);
+    setIsOpen(false);
   };
 
-  useEffect(() => { if (message) setOpen(true); }, [message]);
+  useEffect(() => { if (message && message !== '') setIsOpen(true); }, [message]);
 
   return (
     <div>
 
       <Snackbar
-        open={open}
+        open={isOpen}
         autoHideDuration={6000}
         onClose={handleClose}
       >
-        <Alert onClose={handleClose} severity={severity} sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleClose}
+          severity={severity}
+          sx={{ width: '100%' }}
+        >
           {message}
         </Alert>
       </Snackbar>

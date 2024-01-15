@@ -12,7 +12,6 @@ export default function FloatingCreatePostButton({ handleOpenModal }) {
         color="secondary"
         aria-label="add"
         sx={{
-          // position: { xs: 'fixed', xl: 'absolute' },
           position: 'fixed',
           bottom: 42,
           right: {

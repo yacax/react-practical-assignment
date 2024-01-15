@@ -5,15 +5,16 @@ import Container from '@mui/material/Container';
 import Header from './Header/Header';
 import SimpleSnackbar from '../../@extended/SimpleSnackbar';
 import { clearInfo } from '../../../store/infoSlice';
+import Footer from './Footer/Footer';
 
-function BasicLayout({ children }) {
+function BasicLayout({ handleOpenModal, children }) {
   const info = useSelector((state) => state.info);
   const dispatch = useDispatch();
   useEffect(() => {
     if (info.message) {
       setTimeout(() => {
         dispatch(clearInfo());
-      }, 6000);
+      }, 6500);
     }
   }, [info]);
   return (
@@ -27,8 +28,9 @@ function BasicLayout({ children }) {
         minHeight: '100vh',
       }}
     >
-      <Header />
+      <Header handleOpenModal={handleOpenModal} />
       {children}
+      <Footer />
       <SimpleSnackbar severity={info.severity} message={info.message} />
     </Container>
   );
@@ -36,6 +38,11 @@ function BasicLayout({ children }) {
 
 BasicLayout.propTypes = {
   children: PropTypes.node.isRequired,
+  handleOpenModal: PropTypes.func,
+};
+
+BasicLayout.defaultProps = {
+  handleOpenModal: () => {},
 };
 
 export default BasicLayout;

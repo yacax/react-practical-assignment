@@ -57,11 +57,6 @@ function NewPostModal({
   }, [currentPost]);
 
   const handleClose = () => {
-    // resetForm({
-    //   name: '',
-    //   title: '',
-    //   image: null,
-    // });
     handleCloseModal('modalPost');
   };
 

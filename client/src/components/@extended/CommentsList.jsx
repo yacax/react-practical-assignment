@@ -122,6 +122,7 @@ export default function CommentsList({ comment }) {
           likesCount={comment.likes.length - comment.dislikes.length}
           elementId={comment.id}
           handleLikeOrDislike={handleLikeOrDislike}
+          variant="text"
           groupSize="sm"
           mt={0}
           ml={6}
