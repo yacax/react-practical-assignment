@@ -7,21 +7,21 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import { Box } from '@mui/material';
+import { useDispatch } from 'react-redux';
 import useForm from '../../hooks/useForm';
-
-import mainApi from '../../utils/api';
+import fetchSearch from '../../store/searchThunks';
+import { DEBOUNCE_DELAY } from '../../utils/constants';
+import { resetSearch } from '../../store/searchSlice';
 
 export default function SearchSection() {
+  const dispatch = useDispatch();
   const [debounceTimer, setDebounceTimer] = useState(null);
   const {
     form, handleChange, resetForm, errors,
   } = useForm({ search: '' });
 
-  const handleSearch = () => {
-    console.log('searching', form);
-    mainApi.searchPostsByKeyword(form.search).then((res) => {
-      console.log('res', res);
-    });
+  const handleSearch = async () => {
+    dispatch(fetchSearch(form.search));
   };
 
   const handleSubmit = (e) => {
@@ -34,16 +34,14 @@ export default function SearchSection() {
     const timer = setTimeout(() => {
       if (form.search) {
         handleSearch();
+      } else {
+        dispatch(resetSearch());
       }
-    }, 500);
+    }, DEBOUNCE_DELAY);
     setDebounceTimer(timer);
 
     return () => clearTimeout(timer);
-  }, [form.search]);
-
-  useEffect(() => {
-    console.log('form', form, 'errors', errors);
-  }, [form]);
+  }, [form.search, dispatch]);
 
   return (
     <Box
@@ -84,7 +82,10 @@ export default function SearchSection() {
           fontSize="small"
           sx={{ p: '10px' }}
           aria-label="clear"
-          onClick={() => resetForm()}
+          onClick={() => {
+            resetForm();
+            dispatch(resetSearch());
+          }}
         >
           <ClearIcon />
         </IconButton>

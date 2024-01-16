@@ -19,6 +19,13 @@ const infoSlice = createSlice({
       state.severity = initialState.severity;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase('search/fetchSearch/rejected', (state, action) => {
+        state.message = action.payload.message;
+        state.severity = 'error';
+      });
+  },
 });
 
 export const { addInfo, clearInfo } = infoSlice.actions;
