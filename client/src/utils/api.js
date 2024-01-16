@@ -24,13 +24,6 @@ class Api {
     });
   }
 
-  authorize(name) {
-    return this._request('/signin', {
-      method: 'POST',
-      body: JSON.stringify({ name }),
-    });
-  }
-
   addNewPost(post) {
     return this._request('/post', {
       method: 'POST',
@@ -49,6 +42,12 @@ class Api {
 
   getPostsByPage(pageNumber = 1) {
     return this._request(`/post/page/${pageNumber}`, {
+      method: 'GET',
+    });
+  }
+
+  searchPostsByKeyword(keyword) {
+    return this._request(`/post/search/${keyword}`, {
       method: 'GET',
     });
   }

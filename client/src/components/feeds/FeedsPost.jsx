@@ -19,14 +19,14 @@ import SettingCardMenu from '../@extended/SettingCardMenu';
 import mainApi from '../../utils/api';
 import { addInfo } from '../../store/infoSlice';
 import {
-  deletePostById, setLoading, addPost,
+  setLoading,
 } from '../../store/postsSlice';
 import PopoverAddComment from '../@extended/PopoverAddComment';
 import CommentsList from '../@extended/CommentsList';
 import { DEFAULT_AVATAR_LETTER } from '../../utils/constants';
 import getAvatarColor from '../../utils/getAvatarColors';
 import LikesGroupIndicator from '../@extended/LikesGroupIndicator';
-import { fetchPostUpdate } from '../../store/postsThunks';
+import { fetchPostUpdate, fetchPostsByPage } from '../../store/postsThunks';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -59,6 +59,8 @@ const ExpandMore = styled((props) => {
 
 export default function FeedsPost({ post, handleOpenModal }) {
   const currentUser = useSelector((state) => state.user.currentUser);
+  const currentPage = useSelector((state) => state.posts.currentPage);
+  const totalPages = useSelector((state) => state.posts.totalPages);
   const [isLikedValue, setIsLikedValue] = React.useState(0);
   const [expanded, setExpanded] = React.useState(false);
   const dispatch = useDispatch();
@@ -70,8 +72,8 @@ export default function FeedsPost({ post, handleOpenModal }) {
     try {
       const deleteRequest = await mainApi.deletePost(post.id);
       if (deleteRequest.success) {
+        dispatch(fetchPostsByPage({ page: currentPage, getCurrentPage: true }));
         dispatch(addInfo({ message: 'Post deleted successfully', severity: 'info' }));
-        dispatch(deletePostById(deleteRequest.result.id));
       }
     } catch (error) {
       dispatch(addInfo({ message: error.message, severity: 'error' }));
@@ -94,12 +96,12 @@ export default function FeedsPost({ post, handleOpenModal }) {
       const imageFile = await fetch(post.imageSrc);
       const imageBlob = await imageFile.blob();
       const imageFileForUpload = new File([imageBlob], `image-${post.id}.jpg`, { type: 'image/jpeg' });
-      const newPostWithImage = await mainApi.uploadImage(newPostId, imageFileForUpload);
+      await mainApi.uploadImage(newPostId, imageFileForUpload);
+      dispatch(fetchPostsByPage({ page: totalPages, getLastPage: true }));
       dispatch(addInfo({
         message: 'Post duplicated successfully!',
         severity: 'success',
       }));
-      dispatch(addPost(newPostWithImage.result));
     } catch (error) {
       dispatch(addInfo({ message: error.message, severity: 'error' }));
     } finally {

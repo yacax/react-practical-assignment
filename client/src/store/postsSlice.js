@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchPosts, fetchPostUpdate, fetchCommentUpdate } from './postsThunks';
+import { fetchPostsByPage, fetchPostUpdate, fetchCommentUpdate } from './postsThunks';
 
 const postsSlice = createSlice({
   name: 'posts',
   initialState: {
     posts: [],
+    currentPage: null,
+    totalPages: null,
     loading: false,
     error: null,
   },
@@ -62,15 +64,18 @@ const postsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchPosts.pending, (state) => {
+      .addCase(fetchPostsByPage.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchPosts.fulfilled, (state, action) => {
+      .addCase(fetchPostsByPage.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts = action.payload;
+        state.error = null;
+        state.totalPages = action.payload.totalPages;
+        state.currentPage = action.payload.page;
+        state.posts = action.payload.result;
       })
-      .addCase(fetchPosts.rejected, (state, action) => {
+      .addCase(fetchPostsByPage.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })

@@ -1,11 +1,28 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import mainApi from '../utils/api';
 
-export const fetchPosts = createAsyncThunk(
-  'posts/fetchPosts',
-  async () => {
-    const response = await mainApi.getPostsByPage();
-    return response.result;
+export const fetchPostsByPage = createAsyncThunk(
+  'posts/fetchPostsByPage',
+  async ({ page, getLastPage = false, getCurrentPage = false }, { rejectWithValue }) => {
+    try {
+      if (getLastPage || getCurrentPage) {
+        const totalPagesResponse = await mainApi.getPostsByPage();
+        const { totalPages } = totalPagesResponse;
+
+        if (getLastPage) {
+          return await mainApi.getPostsByPage(totalPages);
+        }
+
+        if (getCurrentPage) {
+          const validPage = totalPages < page ? totalPages : page;
+          return await mainApi.getPostsByPage(validPage);
+        }
+      }
+      const response = await mainApi.getPostsByPage(page);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   },
 );
 

@@ -4,37 +4,43 @@ import { useSelector } from 'react-redux';
 import { Masonry } from '@mui/lab';
 import { Container, Typography } from '@mui/material';
 import FeedsPost from './FeedsPost';
+import Pagination from '../@extended/Pagination';
 
 function Feeds({ handleOpenModal }) {
   const posts = useSelector((state) => state.posts.posts);
+  const count = useSelector((state) => state.posts.totalPages) || 0;
+  const page = useSelector((state) => state.posts.currentPage) || 1;
   return (
-    <Masonry
-      columns={{
-        xs: 1, md: 2, lg: 3,
-      }}
-      spacing={2}
-      sx={{
-        margin: 'auto',
-      }}
-    >
-      {posts && posts.length > 0 ? (
-        posts.map((post) => (
-          <FeedsPost key={post.id} post={post} handleOpenModal={handleOpenModal} />
-        ))
-      ) : (
-        <Container>
-          <Typography
-            variant="h6"
-            sx={{
-              textAlign: 'center',
-              margin: 'auto',
-            }}
-          >
-            No posts available
-          </Typography>
-        </Container>
-      )}
-    </Masonry>
+    <>
+      <Masonry
+        columns={{
+          xs: 1, md: 2, lg: 3,
+        }}
+        spacing={2}
+        sx={{
+          mx: 'auto',
+        }}
+      >
+        {posts && posts.length > 0 ? (
+          posts.map((post) => (
+            <FeedsPost key={post.id} post={post} handleOpenModal={handleOpenModal} />
+          ))
+        ) : (
+          <Container>
+            <Typography
+              variant="h6"
+              sx={{
+                textAlign: 'center',
+                margin: 'auto',
+              }}
+            >
+              No posts available
+            </Typography>
+          </Container>
+        )}
+      </Masonry>
+      <Pagination count={count} page={page} />
+    </>
   );
 }
 

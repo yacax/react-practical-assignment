@@ -36,7 +36,7 @@ export default function Header({ handleOpenModal }) {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box>
       <AppBar position="static">
         <Toolbar>
           <IconButton

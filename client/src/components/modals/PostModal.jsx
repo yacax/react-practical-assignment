@@ -21,10 +21,10 @@ import mainApi from '../../utils/api';
 import useForm from '../../hooks/useForm';
 import {
   setLoading,
-  addPost,
   changePostById,
 } from '../../store/postsSlice';
 import { addInfo } from '../../store/infoSlice';
+import { fetchPostsByPage } from '../../store/postsThunks';
 
 function NewPostModal({
   openModal, handleCloseModal, postId,
@@ -32,6 +32,7 @@ function NewPostModal({
   const [isMounted, setIsMounted] = useState(false);
   const currentUser = useSelector((state) => state.user.currentUser);
   const currentPost = useSelector((state) => state.posts.posts.find((post) => post.id === postId));
+  const totalPages = useSelector((state) => state.posts.totalPages);
   const loading = useSelector((state) => state.posts.loading);
   const dispatch = useDispatch();
 
@@ -76,16 +77,15 @@ function NewPostModal({
         };
         const responseNewPost = await mainApi.addNewPost(formDataForNewPostBase);
         const newPostId = responseNewPost.result.id;
-        let newPostWithImage = null;
         if (form.image) {
-          newPostWithImage = await mainApi.uploadImage(newPostId, form.image);
+          await mainApi.uploadImage(newPostId, form.image);
         }
+        dispatch(fetchPostsByPage({ page: totalPages, getLastPage: true }));
         resetForm();
         dispatch(addInfo({
           message: 'New post successfully created!',
           severity: 'success',
         }));
-        dispatch(addPost(newPostWithImage ? newPostWithImage.result : { comments: [], imageSrc: '', ...responseNewPost.result }));
         handleClose();
       } catch (error) {
         dispatch(addInfo({ message: error.message, severity: 'error' }));

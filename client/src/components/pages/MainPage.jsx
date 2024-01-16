@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import CircularProgress from '@mui/material-next/CircularProgress';
+import { Box } from '@mui/material';
 import BasicLayout from '../layouts/BasicLayout/BasicLayout';
 import Feeds from '../feeds/Feeds';
 import FloatingCreatePostButton from '../@extended/FloatingCreatePostButton';
 import PostModal from '../modals/PostModal';
-import { fetchPosts } from '../../store/postsThunks';
+import { fetchPostsByPage } from '../../store/postsThunks';
 import SearchSection from '../@extended/SearchSection';
-import Pagination from '../@extended/Pagination';
 
 export default function MainPage() {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ export default function MainPage() {
   };
 
   useEffect(() => {
-    dispatch(fetchPosts());
+    dispatch(fetchPostsByPage({ page: 1 }));
   }, []);
 
   useEffect(() => {
@@ -40,32 +40,40 @@ export default function MainPage() {
       navigate('/login');
     }
   }, [currentUser, navigate]);
-
   return (
     <BasicLayout handleOpenModal={handleOpenModal}>
-      <SearchSection />
-      {loading && posts && posts.length < 1 ? (
-        <CircularProgress
-          color="primary"
-          variant="indeterminate"
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-          }}
-        />
-      ) : (
-        <>
-          <Feeds handleOpenModal={handleOpenModal} />
-          <FloatingCreatePostButton handleOpenModal={handleOpenModal} />
-          <PostModal
-            openModal={openModal.modalPost}
-            postId={openModal.postId}
-            handleCloseModal={handleCloseModal}
-          />
-          <Pagination />
-        </>
-      )}
+      <Box sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+        minHeight: 'calc(100vh - 56px - 53px)',
+
+      }}
+      >
+        <SearchSection />
+        {loading && posts && posts.length < 1
+          ? (
+            <CircularProgress
+              color="primary"
+              variant="indeterminate"
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+              }}
+            />
+          ) : (
+            <>
+              <Feeds handleOpenModal={handleOpenModal} />
+              <FloatingCreatePostButton handleOpenModal={handleOpenModal} />
+              <PostModal
+                openModal={openModal.modalPost}
+                postId={openModal.postId}
+                handleCloseModal={handleCloseModal}
+              />
+            </>
+          )}
+      </Box>
     </BasicLayout>
   );
 }

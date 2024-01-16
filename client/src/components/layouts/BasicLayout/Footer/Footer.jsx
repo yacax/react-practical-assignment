@@ -1,40 +1,35 @@
 import React from 'react';
 import {
-  Box, Container, Typography, Link,
+  Box, Typography, Link,
 } from '@mui/material';
 
 function Footer() {
   return (
     <Box
+      maxWidth="lg"
       sx={{
-        py: 3,
+        display: 'flex',
+        flexDirection: { xs: 'column', sm: 'row' },
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        textAlign: { xs: 'center', sm: 'left' },
+
       }}
     >
-      <Container
-        maxWidth="lg"
+      <Typography
         sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          textAlign: { xs: 'center', sm: 'left' },
+          mb: { xs: 1, sm: 2 },
         }}
       >
-        <Typography
-          sx={{
-            mb: { xs: 1, sm: 0 },
-          }}
-        >
-          © Postit
-        </Typography>
-        <Typography
-          variant="body2"
-        >
-          <Link color="inherit" href="https://google.com">
-            All rights reserved
-          </Link>
-        </Typography>
-      </Container>
+        © Postit
+      </Typography>
+      <Typography
+        variant="body2"
+      >
+        <Link color="inherit" href="https://google.com">
+          All rights reserved
+        </Link>
+      </Typography>
     </Box>
   );
 }
