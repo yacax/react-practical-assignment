@@ -5,6 +5,9 @@ const bodyParser = require("body-parser");
 const postRoutes = require("./routes/post");
 const commentRoutes = require("./routes/comment");
 
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const seedPosts = require("./utils/seedPosts");
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
@@ -21,11 +24,15 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(requestLogger);
+
 app.use("/post", postRoutes);
 app.use("/comment", commentRoutes);
 app.use("/live", (req, res) =>
   res.status(200).send({ success: true, result: "SERVER LIVES" })
 );
+
+app.use(errorLogger);
 
 app.use((error, req, res, next) => {
   console.log(error);
@@ -39,8 +46,8 @@ app.use(express.static("public"));
 
 const startApp = async (port = PORT) => {
   app.listen(port, async () => {
-    console.log(`Example app listening at http://localhost:${port}`);
-    // await runDbTests();
+    console.log(`Example app listening at http://localhost:${port}`);   
+    await seedPosts();
   });
 };
 

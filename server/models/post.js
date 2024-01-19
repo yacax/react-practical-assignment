@@ -26,7 +26,8 @@ exports.postSchema = {
         required: false,
     },
     date: {
-        validator: (val) => typeof +val === 'number' && +val !== NaN,
+        // validator: (val) => typeof +val === 'number' && +val !== NaN, // TODO: string or number?
+        validator: (val) => typeof val === 'string',
         required: false,
         default: () => Date.now().toString(),
     },
@@ -84,6 +85,7 @@ exports.deletePostDB = async (id) => {
 exports.createPost = (title, username, imageSrc) => {
     return {
         title, username, imageSrc,
-        likes: [], dislikes: [], date: +Date.now().toString()
+        // likes: [], dislikes: [], date: +Date.now().toString() //TODO: always string?
+        likes: [], dislikes: [], date: Date.now().toString() //TODO: always string?
     }
 };
