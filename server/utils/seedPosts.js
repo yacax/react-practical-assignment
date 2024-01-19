@@ -1,5 +1,5 @@
 const { addPostDB, createPost, editPostDB } = require('../models/post');
-const baseURL = process.env.BASE_URL || 'http://localhost:8080';
+const baseURL = process.env.BASE_URL || 'https://initechtest-f220e52cb609.herokuapp.com' || 'http://localhost:8080';
 
 const initialPostsData = [
   { title: "Let it be, let it be, let it be, let it be", username: "Paul", imageSrc: `${baseURL}/IMG_4253.jpg` },
@@ -22,7 +22,7 @@ async function seedPosts() {
       const post = createPost(postData.title, postData.username);
       const createdNewPost = await addPostDB(post);
       createdNewPost.imageSrc = postData.imageSrc;
-        await editPostDB(createdNewPost.id, createdNewPost);     
+        await editPostDB(createdNewPost.id, createdNewPost);
     }
     console.log("Posts successfully seeded");
   } catch (error) {
