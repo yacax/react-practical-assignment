@@ -52,7 +52,12 @@ function Feeds({ handleOpenModal }) {
       { !nothingFound
       && totalPages > 1
       && !searchPosts.length > 0
-      && <Pagination count={count} page={page} />}
+      && (
+      <Pagination
+        count={count}
+        page={page}
+      />
+      )}
     </>
   );
 }

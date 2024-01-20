@@ -10,6 +10,8 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { useSelector, useDispatch } from 'react-redux';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { clearCurrentUser } from '../../../../store/userSlice';
 
 export default function Header({ handleOpenModal }) {
@@ -67,7 +69,6 @@ export default function Header({ handleOpenModal }) {
                 </Typography>
                 <AccountCircle mr="0" />
               </IconButton>
-
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
@@ -89,13 +90,26 @@ export default function Header({ handleOpenModal }) {
                   sx={{ justifyContent: 'right' }}
                 >
                   New post
+                  <AddCircleOutlineIcon
+                    fontSize="small"
+                    sx={{
+                      ml: '10px',
+
+                    }}
+                  />
                 </MenuItem>
                 <MenuItem
                   onClick={handleLogout}
                   sx={{ color: 'red', justifyContent: 'right' }}
                 >
                   Logout
+                  <ExitToAppIcon
+                    fontSize="small"
+                    sx={{
+                      ml: '10px',
 
+                    }}
+                  />
                 </MenuItem>
               </Menu>
             </div>

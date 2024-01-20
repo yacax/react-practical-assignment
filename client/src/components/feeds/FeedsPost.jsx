@@ -21,12 +21,12 @@ import { addInfo } from '../../store/infoSlice';
 import {
   setLoading,
 } from '../../store/postsSlice';
-import PopoverAddComment from '../@extended/PopoverAddComment';
-import CommentsList from '../@extended/CommentsList';
-import { DEFAULT_AVATAR_LETTER } from '../../utils/constants';
+import PopoverComment from '../@extended/PopoverComment';
+import { DEFAULT_AVATAR_LETTER } from '../../utils/config';
 import getAvatarColor from '../../utils/getAvatarColors';
 import LikesGroupIndicator from '../@extended/LikesGroupIndicator';
 import { fetchPostUpdate, fetchPostsByPage } from '../../store/postsThunks';
+import CommentsList from '../comments/CommentsList';
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -34,7 +34,6 @@ const ExpandMore = styled((props) => {
     <Box
       display="flex"
     >
-
       <Typography
         display="block"
         variant="subtitle1"
@@ -64,6 +63,7 @@ export default function FeedsPost({ post, handleOpenModal }) {
   const [isLikedValue, setIsLikedValue] = React.useState(0);
   const [expanded, setExpanded] = React.useState(false);
   const dispatch = useDispatch();
+  const isOwner = currentUser === post.username || currentUser === 'admin';
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -165,6 +165,7 @@ export default function FeedsPost({ post, handleOpenModal }) {
         )}
         action={(
           <SettingCardMenu
+            isOwner={isOwner}
             deletePost={deletePost}
             duplicatePost={duplicatePost}
             editPost={editPost}
@@ -221,7 +222,7 @@ export default function FeedsPost({ post, handleOpenModal }) {
           flexDirection="row"
           alignItems="center"
         >
-          <PopoverAddComment postId={post.id} />
+          <PopoverComment postId={post.id} />
           <LikesGroupIndicator
             elementId={post.id}
             isLikedValue={isLikedValue}
@@ -242,9 +243,7 @@ export default function FeedsPost({ post, handleOpenModal }) {
             pt: 0,
           }}
         >
-          {post.comments.map((comment) => (
-            <CommentsList comment={comment} key={`comment${comment.id}${post.id}`} post={post} variant="text" color="tertiary" />
-          ))}
+          <CommentsList comments={post.comments} />
         </CardContent>
       </Collapse>
     </Card>

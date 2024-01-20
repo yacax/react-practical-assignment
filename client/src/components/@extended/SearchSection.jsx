@@ -10,7 +10,7 @@ import { Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import useForm from '../../hooks/useForm';
 import fetchSearch from '../../store/searchThunks';
-import { DEBOUNCE_DELAY } from '../../utils/constants';
+import { DEBOUNCE_DELAY } from '../../utils/config';
 import { resetSearch } from '../../store/searchSlice';
 
 export default function SearchSection() {

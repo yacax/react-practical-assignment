@@ -11,6 +11,11 @@ const seedPosts = require("./utils/seedPosts");
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+app.use((req, res, next) => {
+  res.setHeader('Permissions-Policy', 'interest-cohort=()');
+  next();
+});
+
 app.use(bodyParser.urlencoded({ extended: true })); // x-www-form-urlencoded <form>
 app.use(bodyParser.json()); // application/json
 

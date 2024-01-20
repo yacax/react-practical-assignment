@@ -41,3 +41,11 @@ export const fetchCommentUpdate = createAsyncThunk(
     return response.result;
   },
 );
+
+export const fetchCommentDelete = createAsyncThunk(
+  'posts/fetchCommentDelete',
+  async (id) => {
+    const response = await mainApi.deleteComment(id);
+    return response.result;
+  },
+);

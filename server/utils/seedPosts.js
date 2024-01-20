@@ -11,7 +11,7 @@ const initialPostsData = [
   { title: "I don't belong here", username: "Edward", imageSrc: `${baseURL}/IMG_4076.jpg` },
   { title: "Psychic spies from China try to steal your mind's elation", username: "Chad", imageSrc: `${baseURL}/IMG_4183.jpg` },
   { title: "We only said goodbye with words", username: "Amy", imageSrc: `${baseURL}/IMG_5189.jpg` },
-  { title: "I died a hundred times", username: "Lily", imageSrc: `${baseURL}/IMG_8862.jpg` },
+  { title: "They'll learn much more Than I'll ever know", username: "Louis", imageSrc: `${baseURL}/IMG_8862.jpg` },
   { title: "One love, one blood One life, you got to do what you should", username: "Bono", imageSrc: `${baseURL}/IMG_2416.jpg` },  
   { title: "I'm gon' send him to outer space To find another race", username: "Cedric", imageSrc: `${baseURL}/IMG_3633.jpg` },
 ];

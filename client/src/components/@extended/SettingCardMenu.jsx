@@ -7,7 +7,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import Divider from '@mui/material/Divider';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import IconButton from '@mui/material/IconButton';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
@@ -52,9 +51,12 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function SettingCardMenu({ deletePost, duplicatePost, editPost }) {
+export default function SettingCardMenu({
+  isOwner, deletePost, duplicatePost, editPost,
+}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -94,23 +96,26 @@ export default function SettingCardMenu({ deletePost, duplicatePost, editPost })
         open={open}
         onClose={handleClose}
       >
+        { isOwner && (
         <MenuItem onClick={handlePostEdit} disableRipple>
           <EditIcon />
           Edit
         </MenuItem>
+        ) }
         <MenuItem onClick={handlePostDuplicate} disableRipple>
           <FileCopyIcon />
           Duplicate
         </MenuItem>
-        <Divider sx={{ my: 0.5 }} />
-        <MenuItem onClick={handlePostDelete} disableRipple>
-          <DeleteIcon />
-          Delete
-        </MenuItem>
-        <MenuItem onClick={handleClose} disableRipple>
-          <MoreHorizIcon />
-          More
-        </MenuItem>
+
+        {isOwner && (<Divider sx={{ my: 0.5 }} />)}
+        {isOwner && (
+          <MenuItem onClick={handlePostDelete} disableRipple>
+            <DeleteIcon />
+            Delete
+          </MenuItem>
+
+        )}
+
       </StyledMenu>
     </div>
   );
@@ -120,4 +125,9 @@ SettingCardMenu.propTypes = {
   deletePost: PropTypes.func.isRequired,
   duplicatePost: PropTypes.func.isRequired,
   editPost: PropTypes.func.isRequired,
+  isOwner: PropTypes.bool,
+};
+
+SettingCardMenu.defaultProps = {
+  isOwner: false,
 };

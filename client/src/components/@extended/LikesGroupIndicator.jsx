@@ -18,7 +18,7 @@ export default function LikesGroupIndicator({
       return theme.palette.primary.main;
     }
     if (count < 0) {
-      return theme.palette.secondary.main;
+      return theme.palette.error.main;
     }
     return theme.palette.primary.main;
   };
@@ -39,8 +39,8 @@ export default function LikesGroupIndicator({
         ml,
       }}
     >
-      <IconButton aria-label="LikeButton" name="like" onClick={handleLClick} color={color}>
-        {isLikedValue === 1 ? <ThumbUpIcon /> : <ThumbUpOutlinedIcon />}
+      <IconButton aria-label="LikeButton" name="like" onClick={handleLClick}>
+        {isLikedValue === 1 ? <ThumbUpIcon color={color} /> : <ThumbUpOutlinedIcon color={color} />}
       </IconButton>
       <Button
         sx={{
@@ -52,7 +52,8 @@ export default function LikesGroupIndicator({
         {likesCount}
       </Button>
       <IconButton aria-label="DislikeButton" name="dislike" onClick={handleLClick} color={color}>
-        {isLikedValue === -1 ? <ThumbDownIcon /> : <ThumbDownOutlinedIcon />}
+        {isLikedValue === -1
+          ? <ThumbDownIcon color={color} /> : <ThumbDownOutlinedIcon color={color} />}
       </IconButton>
     </ButtonGroup>
   );

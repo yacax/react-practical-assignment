@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { PropTypes } from 'prop-types';
-import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
@@ -8,18 +7,22 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { useSelector, useDispatch } from 'react-redux';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Divider from '@mui/material/Divider';
 import getSimpleDate from '../../utils/getSimpleDate';
 import getAvatarColor from '../../utils/getAvatarColors';
-import { DEFAULT_AVATAR_LETTER } from '../../utils/constants';
-import { fetchCommentUpdate } from '../../store/postsThunks';
+import { DEFAULT_AVATAR_LETTER } from '../../utils/config';
+import { fetchCommentUpdate, fetchCommentDelete } from '../../store/postsThunks';
 import { addInfo } from '../../store/infoSlice';
+import LikesGroupIndicator from '../@extended/LikesGroupIndicator';
+import PopoverComment from '../@extended/PopoverComment';
 
-import LikesGroupIndicator from './LikesGroupIndicator';
-
-export default function CommentsList({ comment }) {
+export default function CommentCard({ comment, id, commentsLength }) {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
   const [isLikedValue, setIsLikedValue] = React.useState(0);
+  const isOwner = currentUser === comment.username || currentUser === 'admin';
 
   const handleLikeOrDislike = async (type) => {
     if (!comment || !currentUser) return;
@@ -46,9 +49,18 @@ export default function CommentsList({ comment }) {
       likes: updatedLikes,
       dislikes: updatedDislikes,
     };
-
     try {
       await dispatch(fetchCommentUpdate({ id: comment.id, comment: updatedComment }));
+      dispatch(addInfo({ message: 'Comment updated', severity: 'success' }));
+    } catch (error) {
+      dispatch(addInfo({ message: error.message, severity: 'error' }));
+    }
+  };
+
+  const handleCommentDelete = async () => {
+    try {
+      await dispatch(fetchCommentDelete(comment.id));
+      dispatch(addInfo({ message: 'Comment deleted', severity: 'info' }));
     } catch (error) {
       dispatch(addInfo({ message: error.message, severity: 'error' }));
     }
@@ -66,26 +78,20 @@ export default function CommentsList({ comment }) {
   }, [comment, currentUser]);
 
   return (
-    <List
-      sx={{
-        width: '100%',
-        maxWidth: 360,
-        bgcolor: 'background.paper',
-        pt: 0,
-      }}
-    >
+    <>
       <ListItem
         alignItems="flex-start"
         sx={{
           display: 'flex',
+          position: 'relative',
           justifyContent: 'space-between',
           flexDirection: 'column',
+
         }}
       >
         <Box
           display="flex"
           alignItems="flex-start"
-
         >
           <ListItemAvatar sx={{ minWidth: '48px' }}>
             <Avatar
@@ -118,6 +124,7 @@ export default function CommentsList({ comment }) {
         </Box>
         <LikesGroupIndicator
           placeLocation="comment"
+          color="primary"
           isLikedValue={isLikedValue}
           likesCount={comment.likes.length - comment.dislikes.length}
           elementId={comment.id}
@@ -127,12 +134,24 @@ export default function CommentsList({ comment }) {
           mt={0}
           ml={6}
         />
+        {isOwner && (
+        <Box position="absolute" display="flex" flexDirection="column" top={3} right={3}>
+          <PopoverComment postId={comment.postId} commentId={comment.id} popoverType="edit" />
+          <IconButton aria-label="delete" onClick={handleCommentDelete}>
+            <DeleteIcon color="primary" fontSize="small" />
+          </IconButton>
+        </Box>
+        ) }
       </ListItem>
-    </List>
+      { (commentsLength - 1 !== id)
+  && <Divider variant="inset" component="li" />}
+    </>
   );
 }
 
-CommentsList.propTypes = {
+CommentCard.propTypes = {
+  id: PropTypes.number.isRequired,
+  commentsLength: PropTypes.number,
   comment: PropTypes.shape({
     id: PropTypes.number.isRequired,
     text: PropTypes.string.isRequired,
@@ -142,24 +161,8 @@ CommentsList.propTypes = {
     dislikes: PropTypes.arrayOf(PropTypes.string),
     date: PropTypes.string.isRequired,
   }).isRequired,
+};
 
-  post: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-    likes: PropTypes.arrayOf(PropTypes.string),
-    dislikes: PropTypes.arrayOf(PropTypes.string),
-    imageSrc: PropTypes.string,
-    date: PropTypes.string,
-    comments: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      text: PropTypes.string.isRequired,
-      postId: PropTypes.number.isRequired,
-      username: PropTypes.string.isRequired,
-      likes: PropTypes.arrayOf(PropTypes.string),
-      dislikes: PropTypes.arrayOf(PropTypes.string),
-      date: PropTypes.string,
-    })),
-  }).isRequired,
-
+CommentCard.defaultProps = {
+  commentsLength: 0,
 };

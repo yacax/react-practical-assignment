@@ -9,19 +9,24 @@ import IconButton from '@mui/material/IconButton';
 import SendIcon from '@mui/icons-material/Send';
 import AddCommentIcon from '@mui/icons-material/AddComment';
 import { Box } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import useForm from '../../hooks/useForm';
 import mainApi from '../../utils/api';
 import { addInfo } from '../../store/infoSlice';
 import { addComment } from '../../store/postsSlice';
+import { fetchCommentUpdate } from '../../store/postsThunks';
 
-export default function PopoverAddComment({ postId }) {
+export default function PopoverComment({ postId, commentId, popoverType }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
+  const currentPost = useSelector((state) => state.posts.posts.find((post) => post.id === postId));
+  const initialText = popoverType === 'edit'
+    ? currentPost.comments.find((comment) => comment.id === commentId).text : '';
   const formInitialValues = {
-    text: '',
+    text: initialText,
     postId,
     username: currentUser,
   };
@@ -37,6 +42,11 @@ export default function PopoverAddComment({ postId }) {
     setAnchorEl(event.currentTarget);
   };
 
+  const handleClickEdit = (event) => {
+    setAnchorEl(event.currentTarget);
+    resetForm();
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -44,12 +54,21 @@ export default function PopoverAddComment({ postId }) {
   const handleCommentSubmit = async (event) => {
     event.preventDefault();
     try {
-      const createComment = await mainApi.createComment(form);
-      dispatch(addInfo({
-        message: 'Comment added successfully!',
-        severity: 'success',
-      }));
-      dispatch(addComment(createComment.result));
+      if (popoverType === 'edit') {
+        dispatch(fetchCommentUpdate({ id: commentId, comment: form }));
+        resetForm();
+        dispatch(addInfo({
+          message: 'Comment updated successfully!',
+          severity: 'success',
+        }));
+      } else {
+        const createComment = await mainApi.createComment(form);
+        dispatch(addInfo({
+          message: 'Comment added successfully!',
+          severity: 'success',
+        }));
+        dispatch(addComment(createComment.result));
+      }
       resetForm();
     } catch (error) {
       dispatch(addInfo({
@@ -63,14 +82,20 @@ export default function PopoverAddComment({ postId }) {
 
   return (
     <Box>
-      <IconButton
-        color="secondary"
-        aria-describedby={id}
-        variant="contained"
-        onClick={handleClick}
-      >
-        <AddCommentIcon sx={{ fontSize: '40px' }} />
-      </IconButton>
+      { popoverType === 'new' ? (
+        <IconButton
+          color="secondary"
+          aria-describedby={id}
+          variant="contained"
+          onClick={handleClick}
+        >
+          <AddCommentIcon sx={{ fontSize: '40px' }} />
+        </IconButton>
+      ) : (
+        <IconButton aria-label="edit" onClick={handleClickEdit}>
+          <EditIcon color="primary" fontSize="small" />
+        </IconButton>
+      )}
       <Popover
         onSubmit={handleCommentSubmit}
         component="form"
@@ -133,7 +158,6 @@ export default function PopoverAddComment({ postId }) {
           endDecorator={(
             <Typography level="body-xs" sx={{ ml: 'auto' }}>
               {form.text.length}
-              {' '}
               character(s)
             </Typography>
           )}
@@ -145,6 +169,13 @@ export default function PopoverAddComment({ postId }) {
   );
 }
 
-PopoverAddComment.propTypes = {
+PopoverComment.propTypes = {
   postId: PropTypes.number.isRequired,
+  commentId: PropTypes.number,
+  popoverType: PropTypes.string,
+};
+
+PopoverComment.defaultProps = {
+  commentId: null,
+  popoverType: 'new',
 };

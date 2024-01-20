@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchPostsByPage, fetchPostUpdate, fetchCommentUpdate } from './postsThunks';
+import {
+  fetchPostsByPage, fetchPostUpdate, fetchCommentUpdate, fetchCommentDelete,
+} from './postsThunks';
 
 const postsSlice = createSlice({
   name: 'posts',
@@ -92,6 +94,12 @@ const postsSlice = createSlice({
           if (commentIndex !== -1) {
             post.comments[commentIndex] = { ...post.comments[commentIndex], ...action.payload };
           }
+        }
+      })
+      .addCase(fetchCommentDelete.fulfilled, (state, action) => {
+        const post = state.posts.find((p) => p.id === action.payload.postId);
+        if (post && post.comments) {
+          post.comments = post.comments.filter((c) => c.id !== action.payload.id);
         }
       });
   },

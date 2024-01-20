@@ -13,6 +13,7 @@ function Footer() {
         alignItems: 'center',
         justifyContent: 'space-between',
         textAlign: { xs: 'center', sm: 'left' },
+        my: { xs: 5, md: 4 },
 
       }}
     >
