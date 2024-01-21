@@ -106,41 +106,57 @@ export default function CommentCard({ comment, id, commentsLength }) {
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary={comment.text}
-            secondary={(
-              <>
+            primary={(
+              <Box display="flex" flexDirection="column" justifyContent="space-between" alignItems="start" width="100%">
                 <Typography
                   sx={{ display: 'inline' }}
                   component="span"
-                  variant="body2"
+                  variant="body1"
                   color="text.primary"
                 >
                   {comment.username}
                 </Typography>
-                {` -  ${getSimpleDate(+comment.date)}`}
-              </>
+                <Typography
+                  sx={{ display: 'inline' }}
+                  component="span"
+                  variant="caption"
+                  color="text.secondary"
+                >
+                  {getSimpleDate(+comment.date)}
+                </Typography>
+                <Typography
+                  sx={{
+                    display: 'block',
+                    mt: 1,
+                    mb: 1,
+                  }}
+                >
+                  {comment.text}
+                </Typography>
+              </Box>
+            )}
+            secondary={(
+              <LikesGroupIndicator
+                placeLocation="comment"
+                color="primary"
+                isLikedValue={isLikedValue}
+                likesCount={comment.likes.length - comment.dislikes.length}
+                elementId={comment.id}
+                handleLikeOrDislike={handleLikeOrDislike}
+                variant="text"
+                groupSize="sm"
+                mt={0}
+              />
           )}
           />
         </Box>
-        <LikesGroupIndicator
-          placeLocation="comment"
-          color="primary"
-          isLikedValue={isLikedValue}
-          likesCount={comment.likes.length - comment.dislikes.length}
-          elementId={comment.id}
-          handleLikeOrDislike={handleLikeOrDislike}
-          variant="text"
-          groupSize="sm"
-          mt={0}
-          ml={6}
-        />
         {isOwner && (
-        <Box position="absolute" display="flex" flexDirection="column" top={3} right={3}>
-          <PopoverComment postId={comment.postId} commentId={comment.id} popoverType="edit" />
-          <IconButton aria-label="delete" onClick={handleCommentDelete}>
-            <DeleteIcon color="primary" fontSize="small" />
-          </IconButton>
-        </Box>
+          <Box position="absolute" display="flex" flexDirection="row" top={7} right={5}>
+            <PopoverComment postId={comment.postId} commentId={comment.id} popoverType="edit" />
+            <IconButton aria-label="delete" onClick={handleCommentDelete}>
+              <DeleteIcon color="primary" fontSize="small" />
+            </IconButton>
+          </Box>
         ) }
       </ListItem>
       { (commentsLength - 1 !== id)
