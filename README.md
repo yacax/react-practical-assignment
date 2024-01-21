@@ -10,18 +10,17 @@ This project involves developing a front-end for a web application. The goal is 
 - **Main Display**: Includes a header, a filterable gallery of posts with functionalities like creating, editing, deleting, liking, and disliking posts and comments.
 - **Responsive Design**: The layout adjusts to various screen sizes, ensuring a consistent user experience across devices.
 
-## Technical Instructions
-
-- Fork the initial repository: [InitechSoftware/react-practical-assignment](https://github.com/InitechSoftware/react-practical-assignment).
-- The server API has already been implemented. Only minor changes have been made for the deployment.
-- Modify the `App.js` in the `client` folder and manage dependencies in the `client/package.json`.
-- Incorporate both functional and objective styles in your implementation.
-
-## Deployment
+### Deployment
 
 This application has been deployed and is accessible at [Postit - react-practical-assignment](https://yacax.github.io/react-practical-assignment/).
 
-## Requirements
+## Initial repository and base task
+
+- Fork the initial repository: [InitechSoftware/react-practical-assignment](https://github.com/InitechSoftware/react-practical-assignment).
+- The server API has already been implemented. Only minor changes have been made for the deployment.
+- The client-side is a skeleton with some basic functionality. The goal is to implement the missing features and improve the existing ones.
+
+### Requirements
 
 - Support actions like creating, editing, deleting, liking, and disliking posts and comments.
 - Implement a login display with username input and a login button.
