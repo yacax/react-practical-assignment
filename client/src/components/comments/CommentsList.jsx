@@ -11,6 +11,7 @@ function CommentsList({ comments }) {
         maxWidth: 360,
         bgcolor: 'background.paper',
         pt: 0,
+        pb: 0,
       }}
     >
       {comments.map((comment, id) => (
@@ -19,6 +20,10 @@ function CommentsList({ comments }) {
           id={id}
           commentsLength={comments.length}
           comment={comment}
+          sx={{
+            pt: 0,
+            pb: 0,
+          }}
         />
       ))}
     </List>

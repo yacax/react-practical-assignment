@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './FeedsPost.scss';
-import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -9,11 +8,10 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Collapse from '@mui/material/Collapse';
 import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useSelector, useDispatch } from 'react-redux';
-import { Box } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import getSimpleDate from '../../utils/getSimpleDate';
 import SettingCardMenu from '../@extended/SettingCardMenu';
 import mainApi from '../../utils/api';
@@ -27,41 +25,16 @@ import getAvatarColor from '../../utils/getAvatarColors';
 import LikesGroupIndicator from '../@extended/LikesGroupIndicator';
 import { fetchPostUpdate, fetchPostsByPage } from '../../store/postsThunks';
 import CommentsList from '../comments/CommentsList';
-
-const ExpandMore = styled((props) => {
-  const { expand, ...other } = props;
-  return (
-    <Box
-      display="flex"
-    >
-      <Typography
-        display="block"
-        variant="subtitle1"
-        color="text.secondary"
-        ml={1}
-        sx={{
-          alignSelf: 'center',
-        }}
-      >
-        Comments
-      </Typography>
-      <IconButton {...other} />
-    </Box>
-  );
-})(({ theme, expand }) => ({
-  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-  marginLeft: 'auto',
-  transition: theme.transitions.create('transform', {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
+import ExpandMore from '../@extended/ExpandMore';
 
 export default function FeedsPost({ post, handleOpenModal }) {
+  const theme = useTheme();
   const currentUser = useSelector((state) => state.user.currentUser);
   const currentPage = useSelector((state) => state.posts.currentPage);
   const totalPages = useSelector((state) => state.posts.totalPages);
   const [isLikedValue, setIsLikedValue] = React.useState(0);
   const [expanded, setExpanded] = React.useState(false);
+  const [commentsOpeningHeight, setCommentsOpeningHeight] = React.useState(0);
   const dispatch = useDispatch();
   const isOwner = currentUser === post.username || currentUser === 'admin';
   const handleExpandClick = () => {
@@ -131,12 +104,18 @@ export default function FeedsPost({ post, handleOpenModal }) {
     }
 
     const updatedPost = { ...post, likes: updatedLikes, dislikes: updatedDislikes };
-
     try {
       await dispatch(fetchPostUpdate({ id: elementId, post: updatedPost }));
     } catch (error) {
       dispatch(addInfo({ message: error.message, severity: 'error' }));
     }
+  };
+
+  const commentsListHeight = () => {
+    const commentsCount = post.comments.length;
+    if (commentsCount > 0 && commentsCount <= 2) return 125 * commentsCount;
+    if (commentsCount > 2) return 300;
+    return 0;
   };
 
   useEffect(() => {
@@ -147,14 +126,14 @@ export default function FeedsPost({ post, handleOpenModal }) {
         return 0;
       };
       setIsLikedValue(isPostLikedOrDisliked);
+      setCommentsOpeningHeight(commentsListHeight());
     }
   }, [post, currentUser]);
 
   return (
     <Card sx={{
       width: '100%',
-      overflow: 'auto',
-      maxHeight: '514px',
+      maxHeight: '814px',
     }}
     >
       <CardHeader
@@ -236,11 +215,38 @@ export default function FeedsPost({ post, handleOpenModal }) {
         in={expanded}
         timeout="auto"
         unmountOnExit
+        sx={{
+          position: 'relative',
+          '&::after': {
+            zIndex: 10,
+            content: '""',
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '30px',
+            backgroundImage: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1))',
+          },
+        }}
+
       >
         <CardContent
+          pb={0}
           sx={{
             overflow: 'auto',
             pt: 0,
+            pb: '20px !important',
+            maxHeight: `${commentsOpeningHeight}px`,
+            '&::-webkit-scrollbar': {
+              width: '2px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: 'none',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              borderRadius: '0px',
+              background: theme.palette.primary.main,
+            },
           }}
         >
           <CommentsList comments={post.comments} />
