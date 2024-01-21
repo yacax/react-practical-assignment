@@ -114,8 +114,8 @@ export default function FeedsPost({ post, handleOpenModal }) {
 
   const commentsListHeight = () => {
     const commentsCount = post.comments.length;
-    if (commentsCount > 0 && commentsCount <= 2) return 125 * commentsCount;
-    if (commentsCount > 2) return 300;
+    if (commentsCount > 0 && commentsCount <= 2) return 155 * commentsCount;
+    if (commentsCount > 2) return 330;
     return 0;
   };
 

@@ -52,7 +52,6 @@ export default function CommentCard({ comment, id, commentsLength }) {
     };
     try {
       await dispatch(fetchCommentUpdate({ id: comment.id, comment: updatedComment }));
-      dispatch(addInfo({ message: 'Comment updated', severity: 'success' }));
     } catch (error) {
       dispatch(addInfo({ message: error.message, severity: 'error' }));
     }
