@@ -26,13 +26,14 @@ import LikesGroupIndicator from '../@extended/LikesGroupIndicator';
 import { fetchPostUpdate, fetchPostsByPage } from '../../store/postsThunks';
 import CommentsList from '../comments/CommentsList';
 import ExpandMore from '../@extended/ExpandMore';
+import useIsLikedValue from '../../hooks/useIsLikedValue';
 
 export default function FeedsPost({ post, handleOpenModal }) {
   const theme = useTheme();
   const currentUser = useSelector((state) => state.user.currentUser);
   const currentPage = useSelector((state) => state.posts.currentPage);
   const totalPages = useSelector((state) => state.posts.totalPages);
-  const [isLikedValue, setIsLikedValue] = React.useState(0);
+  const isLikedValue = useIsLikedValue(post.likes, post.dislikes);
   const [expanded, setExpanded] = React.useState(false);
   const [commentsOpeningHeight, setCommentsOpeningHeight] = React.useState(0);
   const dispatch = useDispatch();
@@ -120,12 +121,6 @@ export default function FeedsPost({ post, handleOpenModal }) {
 
   useEffect(() => {
     if (post) {
-      const isPostLikedOrDisliked = () => {
-        if (post.likes.includes(currentUser)) return 1;
-        if (post.dislikes.includes(currentUser)) return -1;
-        return 0;
-      };
-      setIsLikedValue(isPostLikedOrDisliked);
       setCommentsOpeningHeight(commentsListHeight());
     }
   }, [post, currentUser]);
@@ -258,21 +253,21 @@ export default function FeedsPost({ post, handleOpenModal }) {
 
 FeedsPost.propTypes = {
   post: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
+    id: PropTypes.number,
+    title: PropTypes.string,
+    username: PropTypes.string,
+    date: PropTypes.string,
+    imageSrc: PropTypes.string,
     likes: PropTypes.arrayOf(PropTypes.string),
     dislikes: PropTypes.arrayOf(PropTypes.string),
-    imageSrc: PropTypes.string,
-    date: PropTypes.string,
     comments: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      text: PropTypes.string.isRequired,
-      postId: PropTypes.number.isRequired,
-      username: PropTypes.string.isRequired,
+      id: PropTypes.number,
+      postId: PropTypes.number,
+      username: PropTypes.string,
+      date: PropTypes.string,
+      text: PropTypes.string,
       likes: PropTypes.arrayOf(PropTypes.string),
       dislikes: PropTypes.arrayOf(PropTypes.string),
-      date: PropTypes.string,
     })),
   }).isRequired,
   handleOpenModal: PropTypes.func.isRequired,

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { PropTypes } from 'prop-types';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -17,11 +17,12 @@ import { fetchCommentUpdate, fetchCommentDelete } from '../../store/postsThunks'
 import { addInfo } from '../../store/infoSlice';
 import LikesGroupIndicator from '../@extended/LikesGroupIndicator';
 import PopoverComment from '../@extended/PopoverComment';
+import useIsLikedValue from '../../hooks/useIsLikedValue';
 
 export default function CommentCard({ comment, id, commentsLength }) {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
-  const [isLikedValue, setIsLikedValue] = React.useState(0);
+  const isLikedValue = useIsLikedValue(comment.likes, comment.dislikes);
   const isOwner = currentUser === comment.username || currentUser === 'admin';
 
   const handleLikeOrDislike = async (type) => {
@@ -66,17 +67,6 @@ export default function CommentCard({ comment, id, commentsLength }) {
     }
   };
 
-  useEffect(() => {
-    if (comment) {
-      const isCommentLikedOrDisliked = () => {
-        if (comment.likes.includes(currentUser)) return 1;
-        if (comment.dislikes.includes(currentUser)) return -1;
-        return 0;
-      };
-      setIsLikedValue(isCommentLikedOrDisliked);
-    }
-  }, [comment, currentUser]);
-
   return (
     <>
       <ListItem
@@ -109,8 +99,8 @@ export default function CommentCard({ comment, id, commentsLength }) {
             primary={(
               <Box display="flex" flexDirection="column" justifyContent="space-between" alignItems="start" width="100%">
                 <Typography
-                  sx={{ display: 'inline' }}
                   component="span"
+                  sx={{ display: 'inline' }}
                   variant="body1"
                   color="text.primary"
                 >
@@ -133,21 +123,19 @@ export default function CommentCard({ comment, id, commentsLength }) {
                 >
                   {comment.text}
                 </Typography>
+                <LikesGroupIndicator
+                  placeLocation="comment"
+                  color="primary"
+                  isLikedValue={isLikedValue}
+                  likesCount={comment.likes.length - comment.dislikes.length}
+                  elementId={comment.id}
+                  handleLikeOrDislike={handleLikeOrDislike}
+                  variant="text"
+                  groupSize="sm"
+                  mt={0}
+                />
               </Box>
             )}
-            secondary={(
-              <LikesGroupIndicator
-                placeLocation="comment"
-                color="primary"
-                isLikedValue={isLikedValue}
-                likesCount={comment.likes.length - comment.dislikes.length}
-                elementId={comment.id}
-                handleLikeOrDislike={handleLikeOrDislike}
-                variant="text"
-                groupSize="sm"
-                mt={0}
-              />
-          )}
           />
         </Box>
         {isOwner && (
