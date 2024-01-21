@@ -1,5 +1,5 @@
 const { addPostDB, createPost, editPostDB } = require('../models/post');
-const baseURL = process.env.BASE_URL || 'https://initechtest-f220e52cb609.herokuapp.com' || 'http://localhost:8080';
+const baseURL = 'https://initechtest-f220e52cb609.herokuapp.com';
 
 const initialPostsData = [
   { title: "Let it be, let it be, let it be, let it be", username: "Paul", imageSrc: `${baseURL}/IMG_4253.jpg` },
