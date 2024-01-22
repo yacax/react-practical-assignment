@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/react-practical-assignment/static/css/main.8f423ef4.css",
-    "main.js": "/react-practical-assignment/static/js/main.945b1015.js",
+    "main.js": "/react-practical-assignment/static/js/main.0903c85b.js",
     "static/js/787.d5fa4d18.chunk.js": "/react-practical-assignment/static/js/787.d5fa4d18.chunk.js",
     "index.html": "/react-practical-assignment/index.html",
     "main.8f423ef4.css.map": "/react-practical-assignment/static/css/main.8f423ef4.css.map",
-    "main.945b1015.js.map": "/react-practical-assignment/static/js/main.945b1015.js.map",
+    "main.0903c85b.js.map": "/react-practical-assignment/static/js/main.0903c85b.js.map",
     "787.d5fa4d18.chunk.js.map": "/react-practical-assignment/static/js/787.d5fa4d18.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.8f423ef4.css",
-    "static/js/main.945b1015.js"
+    "static/js/main.0903c85b.js"
   ]
 }
