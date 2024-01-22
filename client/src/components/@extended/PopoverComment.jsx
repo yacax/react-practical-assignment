@@ -10,6 +10,8 @@ import SendIcon from '@mui/icons-material/Send';
 import AddCommentIcon from '@mui/icons-material/AddComment';
 import { Box } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+// import { useTheme } from '@mui/material/styles';
+// import useMediaQuery from '@mui/material/useMediaQuery';
 import useForm from '../../hooks/useForm';
 import mainApi from '../../utils/api';
 import { addInfo } from '../../store/infoSlice';
@@ -18,6 +20,8 @@ import { fetchCommentUpdate } from '../../store/postsThunks';
 
 export default function PopoverComment({ postId, commentId, popoverType }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  // const theme = useTheme();
+  // const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
   const dispatch = useDispatch();
@@ -117,6 +121,15 @@ export default function PopoverComment({ postId, commentId, popoverType }) {
           vertical: 'top',
           horizontal: 'center',
         }}
+        // This is just an attempt to fix the situation
+        // with how the popover display on iPhones.
+        // sx={isMobile ? {
+        //   position: 'fixed',
+        //   top: '50%',
+        //   left: '50%',
+        //   transform: 'translate(-50%, -100%)',
+        //   minWidth: '100%',
+        // } : {}}
       >
 
         <Textarea
@@ -164,6 +177,7 @@ export default function PopoverComment({ postId, commentId, popoverType }) {
           endDecorator={(
             <Typography level="body-xs" sx={{ ml: 'auto' }}>
               {form.text.length}
+              {' '}
               character(s)
             </Typography>
           )}

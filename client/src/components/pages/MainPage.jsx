@@ -40,14 +40,14 @@ export default function MainPage() {
       navigate('/login');
     }
   }, [currentUser, navigate]);
+
   return (
     <BasicLayout handleOpenModal={handleOpenModal}>
       <Box sx={{
         display: 'flex',
-        flexDirection: 'column',
         position: 'relative',
+        flexDirection: 'column',
         minHeight: 'calc(100vh - 56px - 53px)',
-
       }}
       >
         <SearchSection />
@@ -59,7 +59,7 @@ export default function MainPage() {
               sx={{
                 position: 'absolute',
                 top: '50%',
-                left: '50%',
+                left: 'calc(50% - 24px) !important',
               }}
             />
           ) : (
