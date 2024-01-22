@@ -1,5 +1,5 @@
 const { addPostDB, createPost, editPostDB } = require('../models/post');
-const baseURL = 'https://initechtest-f220e52cb609.herokuapp.com';
+const baseURL = process.env.BASE_URL || 'https://initechtest-f220e52cb609.herokuapp.com';
 
 const initialPostsData = [
   { title: "Let it be, let it be, let it be, let it be", username: "Paul", imageSrc: `${baseURL}/IMG_4253.jpg` },
@@ -10,8 +10,8 @@ const initialPostsData = [
   { title: "I'm a creep I'm a weirdo What the hell am I doing here?", username: "Mike", imageSrc: `${baseURL}/IMG_2623.jpg` },
   { title: "I don't belong here", username: "Edward", imageSrc: `${baseURL}/IMG_4076.jpg` },
   { title: "Psychic spies from China try to steal your mind's elation", username: "Chad", imageSrc: `${baseURL}/IMG_4183.jpg` },
-  { title: "We only said goodbye with words", username: "Amy", imageSrc: `${baseURL}/IMG_5189.jpg` },
-  { title: "They'll learn much more Than I'll ever know", username: "Louis", imageSrc: `${baseURL}/IMG_8862.jpg` },
+  { title: "They'll learn much more Than I'll ever knows", username: "Louis", imageSrc: `${baseURL}/IMG_5189.jpg` },
+  { title: "We only said goodbye with words", username: "Amy", imageSrc: `${baseURL}/IMG_8862.jpg` },
   { title: "One love, one blood One life, you got to do what you should", username: "Bono", imageSrc: `${baseURL}/IMG_2416.jpg` },  
   { title: "I'm gon' send him to outer space To find another race", username: "Cedric", imageSrc: `${baseURL}/IMG_3633.jpg` },
 ];
