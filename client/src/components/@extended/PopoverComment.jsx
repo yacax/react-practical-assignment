@@ -81,7 +81,13 @@ export default function PopoverComment({ postId, commentId, popoverType }) {
   };
 
   return (
-    <Box>
+    <Box
+      display="block"
+      position="relative"
+      right="0"
+      top="0"
+      margin="auto"
+    >
       { popoverType === 'new' ? (
         <IconButton
           color="secondary"

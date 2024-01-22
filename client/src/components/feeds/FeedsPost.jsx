@@ -193,6 +193,7 @@ export default function FeedsPost({ post, handleOpenModal }) {
         )}
         <Box
           display="flex"
+          position="relative"
           flexDirection="row"
           alignItems="center"
         >
